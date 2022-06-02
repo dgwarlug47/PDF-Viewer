@@ -40,7 +40,7 @@ class FileToggleButton(applicationStatus: ApplicationStatus, var file: File, var
         borderPane.center = centerScrollPane
 
         if (!Files.isReadable(file.toPath())) {
-            borderPane.children.add(Label("File cannot be read"))
+            centerScrollPane.content = Label("File cannot be read")
         }
         else {
             var foundAppropriateExtension = false

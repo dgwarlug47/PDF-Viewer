@@ -107,7 +107,7 @@ class HelloApplication : Application() {
             EventHandler {
                 sceneGenerator(applicationStatus.homeDir, applicationStatus)
             }
-        fileMenu.items.addAll(menuNextItem, menuPrevItem)
+        fileMenu.items.addAll(menuNextItem, menuPrevItem, menuHomeItem)
 
         // action menu
         val menuRenameItem = MenuItem("Rename")

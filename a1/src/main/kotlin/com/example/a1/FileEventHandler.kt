@@ -58,11 +58,11 @@ class FileEventHandler {
                     } catch (_: java.lang.RuntimeException) {
                     }
                 }
+                val alert = Alert(Alert.AlertType.ERROR)
+                alert.title = "Warning"
+                alert.contentText = "The new file name you added is invalid"
+                alert.showAndWait()
             }
-            val alert = Alert(Alert.AlertType.ERROR)
-            alert.title = "Warning"
-            alert.contentText = "The new file name you added is invalid"
-            alert.showAndWait()
         }
     }
 
@@ -97,11 +97,11 @@ class FileEventHandler {
                 } catch (_: Exception) {
                 } catch (_: java.lang.RuntimeException) {
                 }
+                val alert = Alert(Alert.AlertType.ERROR)
+                alert.title = "Warning"
+                alert.contentText = "The new path location you added is invalid"
+                alert.showAndWait()
             }
-            val alert = Alert(Alert.AlertType.ERROR)
-            alert.title = "Warning"
-            alert.contentText = "The new path location you added is invalid"
-            alert.showAndWait()
 
         }
     }
