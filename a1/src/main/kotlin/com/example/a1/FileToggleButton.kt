@@ -50,6 +50,7 @@ class FileToggleButton(applicationStatus: ApplicationStatus, var file: File, var
                     foundAppropriateExtension = true
                     println("complete url" + file.absolutePath)
                     val image = ImageView(Image(FileInputStream(file.absolutePath)))
+                    image.isPreserveRatio = true
                     val pane = Pane()
                     image.fitWidthProperty().bind(pane.widthProperty())
                     image.fitHeightProperty().bind(pane.heightProperty())
@@ -68,6 +69,7 @@ class FileToggleButton(applicationStatus: ApplicationStatus, var file: File, var
                     label.prefWidthProperty().bind(borderPane.widthProperty())
                     centerScrollPane.content = text
                 }
+
             if (!foundAppropriateExtension) {
                 centerScrollPane.content = (Label("Unsupported Type"))
             }

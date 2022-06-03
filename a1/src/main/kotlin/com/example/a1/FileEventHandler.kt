@@ -6,11 +6,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 fun deleteDirectory(directory: File) {
-
     // if the file is directory or not
     if (directory.isDirectory) {
         val files = directory.listFiles();
-
         // if the directory contains any file
         if (files != null) {
             for (file in files) {
@@ -47,12 +45,16 @@ class FileEventHandler {
                 if (validPath) {
                     try {
                         val newFile = File(newFileName)
-                        if (oldFile?.isDirectory == true) {
-                            newFile.mkdir()
-                        }
                         println(newFile.absolutePath)
                         selectedToggle.text = result.get()
-                        oldFile?.renameTo(newFile)
+                        val success = oldFile?.renameTo(newFile)
+                        if (!success!!){
+                            val alert = Alert(Alert.AlertType.ERROR)
+                            alert.title = "Warning"
+                            alert.contentText = "The new file name you added is invalid"
+                            alert.showAndWait()
+                            return
+                        }
                         return
                     } catch (_: Exception) {
                     } catch (_: java.lang.RuntimeException) {
@@ -88,10 +90,13 @@ class FileEventHandler {
                     if (validPath) {
                         val oldFile = buttonTextToFile[selectedToggle.text]
                         val newFile = File(newFileName)
-                        if (oldFile?.isDirectory == true) {
-                            newFile.mkdir()
+                        val success = oldFile?.renameTo(newFile)
+                        if (!success!!){
+                            val alert = Alert(Alert.AlertType.ERROR)
+                            alert.title = "Warning"
+                            alert.contentText = "The new path location you added is invalid"
+                            alert.showAndWait()
                         }
-                        oldFile?.renameTo(newFile)
                         return
                     }
                 } catch (_: Exception) {
