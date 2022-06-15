@@ -11,24 +11,7 @@ import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.transform.Affine
-import kotlin.math.PI
-import kotlin.math.sqrt
 
-
-fun radians(degrees: Double): Double {
-    return degrees * (PI / 180.0)
-}
-
-fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
-    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
-}
-
-fun circle(): Canvas {
-    val canvas = Canvas(40.0, 50.0)
-    val gc = canvas.graphicsContext2D
-    gc.fill = Color.CHOCOLATE
-    return canvas
-}
 
 fun arrow(): javafx.scene.shape.Polygon{
     val headX = 20.0
@@ -62,8 +45,9 @@ class View1(val model: Model): IView, StackPane(){
 
     override fun update() {
         if (model.selectedShape != null){
+            println("MESSI1998")
             this.fillColorPicker.value = this.model.getSelectedFillColor()
-            this.lineColorPicker.value = this.model.getSelectedFillColor()
+            this.lineColorPicker.value = this.model.getSelectedLineColor()
         }
     }
 
@@ -83,42 +67,33 @@ class View1(val model: Model): IView, StackPane(){
         vbox.children.add(fillColorVBox)
         vbox.children.add(lineColorVBox)
 
-        eraseToolButton.setOnAction { model.setSelectedTool(Tools.EraseTool)}
 
-        val arrowPolygon = arrow()
-        arrowPolygon.onMouseClicked = EventHandler {
-            model.setSelectedTool(Tools.SelectionTool)
-        }
-
-        selectionToolButton.graphic = arrowPolygon
+        // selectionTollButton
+        selectionToolButton.graphic = arrow()
         hbox1.children.add(selectionToolButton)
-
-        selectionToolButton.addEventFilter(MouseEvent.MOUSE_MOVED) { e ->
-            val centerHeight = selectionToolButton.height/2
-            val centerWidth = selectionToolButton.width/2
-            val distance = distance(centerWidth, e.x, centerHeight, e.y)
-            val distance2 = distance(centerWidth, centerWidth*2, centerHeight, centerHeight*2)
-            arrowPolygon.scaleX = distance/distance2
-            arrowPolygon.scaleY = distance/distance2
-        }
 
         selectionToolButton.setOnAction {
             model.setSelectedTool(Tools.SelectionTool)
         }
 
+        // eraseToolButton
         hbox1.children.add(eraseToolButton)
+        eraseToolButton.setOnAction { model.setSelectedTool(Tools.EraseTool)}
 
+        // circleToolButton
         circleToolButton.graphic = arrow()
         hbox2.children.add(circleToolButton)
         circleToolButton.setOnAction {
             model.setSelectedTool(Tools.CircleTool)
         }
 
+        // rectangleTool Button
         hbox2.children.add(rectangleToolButton)
         rectangleToolButton.setOnAction {
             model.setSelectedTool(Tools.RectangleTool)
         }
 
+        // fillColorPicker
         val fillColorText = Label("Fill Color")
         fillColorVBox.children.add(fillColorText)
 
@@ -128,6 +103,7 @@ class View1(val model: Model): IView, StackPane(){
             model.setSelectedFillColor(fillColorPicker.value)
         }
 
+        // lineColorPicker
         val lineColorText = Label("Line Color")
         lineColorVBox.children.add(lineColorText)
 
@@ -137,6 +113,7 @@ class View1(val model: Model): IView, StackPane(){
             model.setSelectedLineColor(lineColorPicker.value)
         }
 
+        // lineTool Button
         hbox3.children.add(lineToolButton)
         lineToolButton.setOnAction {
             model.setSelectedTool(Tools.LineTool)

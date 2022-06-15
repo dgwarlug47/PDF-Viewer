@@ -6,6 +6,9 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.*
 import kotlin.math.sqrt
 
+fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+}
 
 enum class Tools{
     SelectionTool,
@@ -60,18 +63,12 @@ class Model(){
         updateViews()
     }
 
-    fun addView(view: IView) {
-        views.add(view)
-        view.update()
+    @JvmName("getSelectedLineColor1")
+    fun getSelectedLineColor() : Color? {
+        return this.selectedLineColor
     }
 
     private fun markShape(){
-        if (this.selectedShape is Circle){
-            val circle = (this.selectedShape as Circle)
-            this.shapeMarker = Arc(circle.centerX, circle.centerY,
-                circle.radius, circle.radius, 0.0, 360.0)
-            (this.shapeMarker as Arc).fill = this.backgroundColor
-        }
         /*
         this.selectedShape?.stroke = Color.SNOW
         this.selectedShape?.strokeType = StrokeType.INSIDE
@@ -96,13 +93,23 @@ class Model(){
         //this.selectedShape?.strokeDashArray?.addAll(this.selectedStyle)
     }
 
+    private fun updatePropertiesBasedOnShape(){
+        if (this.selectedShape != null) {
+            this.selectedFillColor = this.selectedShape?.fill as Color?
+            this.selectedLineColor = this.selectedShape?.stroke as Color?
+            this.selectedThickness = this.selectedShape?.strokeWidth!!
+            // the one with they style
+        }
+    }
+
     private fun shapeSelectedAction(shape: Shape){
         if (this.selectedTool == Tools.SelectionTool){
             this.selectedShape = shape
-            this.updateShapeBasedOnProperties()
+            updatePropertiesBasedOnShape()
             this.markShape()
         }
     }
+
 
     fun addNewShapeActions(shape: Shape){
         this.selectedShape = shape
@@ -110,6 +117,7 @@ class Model(){
         shape.onMouseClicked = EventHandler {
             run{
                 this.shapeSelectedAction(shape)
+                println("MESSI")
                 updateViews()
             }
         }
@@ -117,19 +125,18 @@ class Model(){
             run{
                 println("ja escuto os teus sinais")
                 this.unMarkShape()
+                updateViews()
             }
         }
     }
 
     fun paneDragged(e: MouseEvent){
-        print("what")
         markShape()
         if (this.selectedShape is Circle && this.selectedTool == Tools.CircleTool){
-            (this.selectedShape as Circle).radius = sqrt((e.y - (this.selectedShape as Circle).centerY)*(e.y - (this.selectedShape as Circle).centerY) + (e.x - (this.selectedShape as Circle).centerX)*(e.x - (this.selectedShape as Circle).centerX))
+            (this.selectedShape as Circle).radius = distance(e.x, (this.selectedShape as Circle).centerX, e.y, (this.selectedShape as Circle).centerY)
         }
 
         if (this.selectedShape is Line && this.selectedTool == Tools.LineTool){
-            print("what2")
             (this.selectedShape as Line).endX = e.x
             (this.selectedShape as Line).endY = e.y
         }
@@ -156,6 +163,10 @@ class Model(){
         }
     }
 
+    fun addView(view: IView) {
+        views.add(view)
+        view.update()
+    }
     private fun updateViews(){
         println("updating")
         for (view in this.views){
