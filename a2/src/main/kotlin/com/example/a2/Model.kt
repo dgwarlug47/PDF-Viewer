@@ -16,14 +16,15 @@ enum class Tools{
 }
 class Model(){
     private val views: ArrayList<IView> = ArrayList()
+    val defaultColor = Color.CORAL
     var selectedTool = Tools.SelectionTool
     var selectedShape : Shape? = null
-    var shapeMarker : Shape? = null
-    var selectedFillColor : Color? = null
-    var selectedLineColor : Color? = null
-    var selectedThickness : Double = 20.0
-    var selectedStyle: Double? = null
-    var backgroundColor = Color.BEIGE
+    private var shapeMarker : Shape? = null
+    private var selectedFillColor : Color? = defaultColor
+    private var selectedLineColor : Color? = defaultColor
+    private var selectedThickness : Double = 10.0
+    private var selectedStyle: Double? = null
+    val backgroundColor = Color.BEIGE
 
     @JvmName("setSelectedTool1")
     fun setSelectedTool(tool: Tools) {
@@ -41,9 +42,21 @@ class Model(){
     }
 
     @JvmName("setSelectedColor1")
-    fun setSelectedColor(color: Color?) {
+    fun setSelectedFillColor(color: Color?) {
         this.selectedFillColor = color
-        this.selectedShape?.fill = color
+        updateShapeBasedOnProperties()
+        updateViews()
+    }
+
+    @JvmName("getSelectedColor1")
+    fun getSelectedFillColor() : Color? {
+        return this.selectedFillColor
+    }
+
+    @JvmName("setSelectedLineColor1")
+    fun setSelectedLineColor(color: Color?) {
+        this.selectedLineColor = color
+        updateShapeBasedOnProperties()
         updateViews()
     }
 
@@ -52,7 +65,7 @@ class Model(){
         view.update()
     }
 
-    fun markShape(){
+    private fun markShape(){
         if (this.selectedShape is Circle){
             val circle = (this.selectedShape as Circle)
             this.shapeMarker = Arc(circle.centerX, circle.centerY,
@@ -68,7 +81,7 @@ class Model(){
     }
 
     private fun unMarkShape(){
-        this.selectedShape?.stroke = this.selectedFillColor
+        this.selectedShape?.stroke = this.selectedLineColor
         this.selectedShape = null
     }
 
@@ -80,7 +93,7 @@ class Model(){
         this.selectedShape?.fill = this.selectedFillColor
         this.selectedShape?.stroke = this.selectedLineColor
         this.selectedShape?.strokeWidth = this.selectedThickness
-        this.selectedShape?.strokeDashArray?.addAll(this.selectedStyle)
+        //this.selectedShape?.strokeDashArray?.addAll(this.selectedStyle)
     }
 
     private fun shapeSelectedAction(shape: Shape){
@@ -103,7 +116,7 @@ class Model(){
         shape.onMouseDragReleased = EventHandler {
             run{
                 println("ja escuto os teus sinais")
-                shape.stroke = this.selectedFillColor
+                this.unMarkShape()
             }
         }
     }

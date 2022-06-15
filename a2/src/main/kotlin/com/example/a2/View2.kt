@@ -12,8 +12,8 @@ import javafx.scene.shape.Shape
 class View2(private val model: Model): Pane(), IView{
 
     private fun addNewShape(shape: Shape){
-        this.model.addNewShapeActions(shape)
         this.children.add(shape)
+        this.model.addNewShapeActions(shape)
     }
 
     init{

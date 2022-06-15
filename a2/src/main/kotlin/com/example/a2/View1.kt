@@ -3,7 +3,7 @@ package com.example.a2
 import javafx.event.EventHandler
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.ColorPicker
-import javafx.scene.control.Slider
+import javafx.scene.control.Label
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
@@ -62,8 +62,8 @@ class View1(val model: Model): IView, StackPane(){
 
     override fun update() {
         if (model.selectedShape != null){
-            this.fillColorPicker.value = this.model.selectedFillColor
-            this.lineColorPicker.value = this.model.selectedLineColor
+            this.fillColorPicker.value = this.model.getSelectedFillColor()
+            this.lineColorPicker.value = this.model.getSelectedFillColor()
         }
     }
 
@@ -74,9 +74,14 @@ class View1(val model: Model): IView, StackPane(){
         val hbox2 = HBox()
         val hbox3 = HBox()
 
+        val fillColorVBox = VBox()
+        val lineColorVBox = VBox()
+
         vbox.children.add(hbox1)
         vbox.children.add(hbox2)
         vbox.children.add(hbox3)
+        vbox.children.add(fillColorVBox)
+        vbox.children.add(lineColorVBox)
 
         eraseToolButton.setOnAction { model.setSelectedTool(Tools.EraseTool)}
 
@@ -114,20 +119,22 @@ class View1(val model: Model): IView, StackPane(){
             model.setSelectedTool(Tools.RectangleTool)
         }
 
+        val fillColorText = Label("Fill Color")
+        fillColorVBox.children.add(fillColorText)
 
-        fillColorPicker.value = Color.CORAL
-        model.selectedFillColor = Color.CORAL
-        vbox.children.add(fillColorPicker)
+        fillColorPicker.value = model.defaultColor
+        fillColorVBox.children.add(fillColorPicker)
         fillColorPicker.setOnAction {
-            model.setSelectedColor(fillColorPicker.value)
+            model.setSelectedFillColor(fillColorPicker.value)
         }
 
+        val lineColorText = Label("Line Color")
+        lineColorVBox.children.add(lineColorText)
 
-        lineColorPicker.value = Color.CORAL
-        model.selectedFillColor = Color.CORAL
-        vbox.children.add(lineColorPicker)
+        lineColorPicker.value = model.defaultColor
+        lineColorVBox.children.add(lineColorPicker)
         lineColorPicker.setOnAction {
-            model.setSelectedColor(lineColorPicker.value)
+            model.setSelectedLineColor(lineColorPicker.value)
         }
 
         hbox3.children.add(lineToolButton)
