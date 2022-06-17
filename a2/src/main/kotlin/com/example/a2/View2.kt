@@ -17,7 +17,6 @@ class View2(private val model: Model): Pane(), IView{
     }
 
     init{
-
         // background
         this.background = Background(BackgroundFill(model.backgroundColor, CornerRadii.EMPTY, Insets.EMPTY))
         val invisibleCircle = Circle(0.0, 0.0, 500.0)

@@ -26,7 +26,7 @@ class Model(){
     private var selectedFillColor : Color? = defaultColor
     private var selectedLineColor : Color? = defaultColor
     private var selectedThickness : Double = 10.0
-    private var selectedStyle: Double? = null
+    private var selectedStyle: Double? = 2.0
     val backgroundColor = Color.BEIGE
 
     @JvmName("setSelectedTool1")
@@ -68,6 +68,30 @@ class Model(){
         return this.selectedLineColor
     }
 
+    @JvmName("setThickness")
+    fun setSelectedThickness(thickness: Double){
+        this.selectedThickness = thickness
+        updateShapeBasedOnProperties()
+        updateViews()
+    }
+
+    @JvmName("getSelectedThickness")
+    fun getThickness(): Double{
+        return this.selectedThickness
+    }
+
+    @JvmName("setSelectedStyle")
+    fun setSelectedStyle(style: Double){
+        this.selectedStyle = style
+        updateShapeBasedOnProperties()
+        updateViews()
+    }
+
+    @JvmName("getSelectedStyle")
+    fun getSelectedStyle(): Double? {
+        return this.selectedStyle
+    }
+
     private fun markShape(){
         /*
         this.selectedShape?.stroke = Color.SNOW
@@ -90,7 +114,12 @@ class Model(){
         this.selectedShape?.fill = this.selectedFillColor
         this.selectedShape?.stroke = this.selectedLineColor
         this.selectedShape?.strokeWidth = this.selectedThickness
-        //this.selectedShape?.strokeDashArray?.addAll(this.selectedStyle)
+        val c = this.selectedStyle
+        this.selectedShape?.strokeDashArray?.removeAll()
+        this.selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
+        println("hey i am here")
+        println("dash array " + this.selectedShape?.strokeDashArray)
+        this.selectedShape?.strokeDashArray?.addAll(c,c,c,c,c,c,c,c,c,c,c)
     }
 
     private fun updatePropertiesBasedOnShape(){
