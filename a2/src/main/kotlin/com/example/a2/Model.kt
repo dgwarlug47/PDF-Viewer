@@ -4,6 +4,8 @@ import javafx.event.EventHandler
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
@@ -81,6 +83,14 @@ class Model(){
     private var selectedThickness : Thickness = Thickness.Type1
     private var selectedStyle: Style? = Style.Type1
     val backgroundColor = Color.BEIGE
+    var enterX : Double? = null
+    var enterY : Double? = null
+
+    // mark border
+    var markBorderX:  Double? = null
+    var markBorderY: Double? = null
+    var markBorderWidth: Double? = null
+    var markBorderHeight: Double? = null
 
     @JvmName("setSelectedTool1")
     fun setSelectedTool(tool: Tools) {
@@ -128,8 +138,10 @@ class Model(){
 
     @JvmName("setThickness")
     fun setSelectedThickness(thickness: Thickness){
+        println("selecting thickness")
         this.selectedThickness = thickness
         updateShapeBasedOnProperties()
+        markShape()
         updateViews()
     }
 
@@ -140,6 +152,7 @@ class Model(){
 
     @JvmName("setSelectedStyle")
     fun setSelectedStyle(style: Style){
+        println("selecting style")
         this.selectedStyle = style
         updateShapeBasedOnProperties()
         updateViews()
@@ -151,27 +164,53 @@ class Model(){
     }
 
     private fun markShape(){
-        /*
-        this.selectedShape?.stroke = Color.SNOW
-        this.selectedShape?.strokeType = StrokeType.INSIDE
-        this.selectedShape?.strokeWidth = 20.0
-        this.selectedShape?.strokeDashArray?.addAll(25.0, 10.0)
-        */
+        val borderOffset = 14.0 + this.selectedShape!!.strokeWidth
+        if (this.selectedShape is Circle){
+            println("marking shape")
+            this.markBorderX = (this.selectedShape as Circle).centerX - (this.selectedShape as Circle).radius - borderOffset
+            this.markBorderY = (this.selectedShape as Circle).centerY - (this.selectedShape as Circle).radius - borderOffset
+            this.markBorderWidth = 2*(this.selectedShape as Circle).radius + 2 * borderOffset
+            this.markBorderHeight = 2*(this.selectedShape as Circle).radius + 2 * borderOffset
+        }
+        if (this.selectedShape is Rectangle){
+            this.markBorderX = (this.selectedShape as Rectangle).x - borderOffset
+            this.markBorderY = (this.selectedShape as Rectangle).y - borderOffset
+            this.markBorderWidth = (this.selectedShape as Rectangle).width + 2 * borderOffset
+            this.markBorderHeight = (this.selectedShape as Rectangle).height + 2 * borderOffset
+        }
+        if (this.selectedShape is Line){
+            val startX = (this.selectedShape as Line).startX
+            val startY = (this.selectedShape as Line).startY
+            val endX = (this.selectedShape as Line).endX
+            val endY = (this.selectedShape as Line).endY
+            this.markBorderX = min(startX, endX) - borderOffset
+            this.markBorderY = min(startY, endY) - borderOffset
+            this.markBorderWidth = max(startX, endX) - min(startX, endX) + 2*borderOffset
+            this.markBorderHeight = max(startY, endY) - min(startY, endY) + 2*borderOffset
+        }
     }
 
     private fun unMarkShape(){
-        this.selectedShape?.stroke = this.selectedLineColor
+        println("un marking shape")
         this.selectedShape = null
+        this.markBorderHeight = null
+        this.markBorderY = null
+        this.markBorderX = null
+        this.markBorderWidth = null
     }
 
     fun mouseReleased(){
-        unMarkShape()
+        if (this.selectedTool != Tools.SelectionTool) {
+            unMarkShape()
+        }
     }
 
     private fun updateShapeBasedOnProperties(){
+        println("updating shape based on properties")
+        println(this.selectedShape)
         this.selectedShape?.fill = this.selectedFillColor
         this.selectedShape?.stroke = this.selectedLineColor
-        this.selectedShape?.strokeWidth = Thickness.Type2.getStyle(this.selectedThickness)
+        this.selectedShape?.strokeWidth = Thickness.Type3.getStyle(this.selectedThickness)
 
         var dashSize = 20.0
 
@@ -193,32 +232,40 @@ class Model(){
             this.selectedFillColor = this.selectedShape?.fill as Color?
             this.selectedLineColor = this.selectedShape?.stroke as Color?
             this.selectedThickness = Thickness.Type1.getType(this.selectedShape?.strokeWidth!!)
-            // the one with they style
+            this.selectedStyle = Style.Type1.getType(this.selectedShape?.strokeDashArray!![0])
         }
     }
 
-    private fun shapeSelectedAction(shape: Shape){
+    private fun shapePressedAction(shape: Shape){
         if (this.selectedTool == Tools.SelectionTool){
+            if (this.selectedShape != null){
+                this.unMarkShape()
+            }
             this.selectedShape = shape
             updatePropertiesBasedOnShape()
             this.markShape()
         }
     }
 
+    fun paneSelected(e: MouseEvent){
+        this.enterX = e.x
+        this.enterY = e.y
+    }
+
 
     fun addNewShapeActions(shape: Shape){
         this.selectedShape = shape
         this.updateShapeBasedOnProperties()
-        shape.onMouseClicked = EventHandler {
+        shape.onMousePressed = EventHandler {
             run{
-                this.shapeSelectedAction(shape)
-                println("MESSI")
+                println("shape was selected")
+                this.shapePressedAction(shape)
                 updateViews()
             }
         }
+        shape.onMousePressed
         shape.onMouseDragReleased = EventHandler {
             run{
-                println("ja escuto os teus sinais")
                 this.unMarkShape()
                 updateViews()
             }
@@ -256,6 +303,28 @@ class Model(){
                 (this.selectedShape as Rectangle).height = e.y - fixedPointY
             }
         }
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Circle){
+            println("getting to the point")
+            (this.selectedShape as Circle).centerX = (this.selectedShape as Circle).centerX + e.x - this.enterX!!
+            (this.selectedShape as Circle).centerY = (this.selectedShape as Circle).centerY + e.y - this.enterY!!
+            this.enterX = e.x
+            this.enterY = e.y
+        }
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Rectangle){
+            (this.selectedShape as Rectangle).x = (this.selectedShape as Rectangle).x + e.x - enterX!!
+            (this.selectedShape as Rectangle).y = (this.selectedShape as Rectangle).y + e.y - enterY!!
+            this.enterX = e.x
+            this.enterY = e.y
+        }
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Line){
+            (this.selectedShape as Line).startX = (this.selectedShape as Line).startX + e.x - enterX!!
+            (this.selectedShape as Line).endX = (this.selectedShape as Line).endX + e.x - enterX!!
+            (this.selectedShape as Line).startY = (this.selectedShape as Line).startY + e.y - enterY!!
+            (this.selectedShape as Line).endY = (this.selectedShape as Line).endY + e.y - enterY!!
+            this.enterX = e.x
+            this.enterY = e.y
+        }
+        this.updateViews()
     }
 
     fun addView(view: IView) {
