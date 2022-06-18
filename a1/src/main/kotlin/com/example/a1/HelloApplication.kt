@@ -47,7 +47,6 @@ class HelloApplication : Application() {
         applicationStatus.firstButtonSelected = false
         val pathCurrentDirectory = Paths.get(currentDirectoryName)
         val currentDirectory = pathCurrentDirectory.toFile()
-
         val buttonTextToFile : MutableMap<String, File> = mutableMapOf()
 
         // Check if the Path is a directory

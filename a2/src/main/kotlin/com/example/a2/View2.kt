@@ -26,15 +26,15 @@ class View2(private val model: Model): Pane(), IView{
         this.setOnMousePressed{
             e ->
             run{
-                if (model.selectedTool == Tools.CircleTool) {
+                if (model.getSelectedTool() == Tools.CircleTool) {
                     val circle = Circle(e.x, e.y, 10.0)
                     this.addNewShape(circle)
                 }
-                if (model.selectedTool == Tools.RectangleTool){
+                if (model.getSelectedTool() == Tools.RectangleTool){
                     val rectangle = CustomizedRectangle(e.x, e.y, 20.0, 20.0)
                     this.addNewShape(rectangle)
                 }
-                if (model.selectedTool == Tools.LineTool){
+                if (model.getSelectedTool() == Tools.LineTool){
                     print("here")
                     val line = Line(e.x, e.y, e.x+20, e.y+20)
                     this.addNewShape(line)
@@ -55,11 +55,11 @@ class View2(private val model: Model): Pane(), IView{
     }
 
     override fun update() {
-        if (model.selectedShape != null && model.selectedTool != Tools.EraseTool) {
+        if (model.selectedShape != null && model.getSelectedTool() != Tools.EraseTool) {
             this.children.remove(model.selectedShape)
             this.children.add(model.selectedShape)
         }
-        if (model.selectedShape != null && model.selectedTool == Tools.EraseTool){
+        if (model.selectedShape != null && model.getSelectedTool() == Tools.EraseTool){
             this.children.remove(model.selectedShape)
         }
     }

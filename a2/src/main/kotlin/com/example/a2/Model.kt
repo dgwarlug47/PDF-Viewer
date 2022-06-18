@@ -10,23 +10,76 @@ fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
     return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 }
 
+enum class Style{
+    Type1,
+    Type2,
+    Type3;
+
+    fun getType(style: Double): Style{
+        if (style == 1.0){
+            return Type1
+        }
+        if (style == 20.0){
+            return Type2
+        }
+        return Type3
+    }
+
+    fun getStyle(style: Style): Double{
+        if (style == Type1){
+            return 1.0
+        }
+        if (style == Type2){
+            return 20.0
+        }
+            return 50.0
+    }
+}
+
+enum class Thickness{
+    Type1,
+    Type2,
+    Type3;
+
+    fun getType(style: Double): Thickness{
+        if (style == 10.0){
+            return Type1
+        }
+        if (style == 40.0){
+            return Type2
+        }
+        return Type3
+    }
+
+    fun getStyle(style: Thickness): Double{
+        if (style == Type1){
+            return 10.0
+        }
+        if (style == Type2){
+            return 30.0
+        }
+        return 60.0
+    }
+}
+
 enum class Tools{
     SelectionTool,
     EraseTool,
     LineTool,
     RectangleTool,
-    CircleTool
+    CircleTool,
+    FillTool
 }
 class Model(){
     private val views: ArrayList<IView> = ArrayList()
     val defaultColor = Color.CORAL
-    var selectedTool = Tools.SelectionTool
+    private var selectedTool = Tools.SelectionTool
     var selectedShape : Shape? = null
     private var shapeMarker : Shape? = null
     private var selectedFillColor : Color? = defaultColor
     private var selectedLineColor : Color? = defaultColor
-    private var selectedThickness : Double = 10.0
-    private var selectedStyle: Double? = 2.0
+    private var selectedThickness : Thickness = Thickness.Type1
+    private var selectedStyle: Style? = Style.Type1
     val backgroundColor = Color.BEIGE
 
     @JvmName("setSelectedTool1")
@@ -36,6 +89,11 @@ class Model(){
             this.unMarkShape()
         }
         updateViews()
+    }
+
+    @JvmName("getSelectedTool1")
+    fun getSelectedTool() : Tools{
+        return this.selectedTool
     }
 
     @JvmName("setSelectedShape1")
@@ -69,26 +127,26 @@ class Model(){
     }
 
     @JvmName("setThickness")
-    fun setSelectedThickness(thickness: Double){
+    fun setSelectedThickness(thickness: Thickness){
         this.selectedThickness = thickness
         updateShapeBasedOnProperties()
         updateViews()
     }
 
     @JvmName("getSelectedThickness")
-    fun getThickness(): Double{
+    fun getThickness(): Thickness{
         return this.selectedThickness
     }
 
     @JvmName("setSelectedStyle")
-    fun setSelectedStyle(style: Double){
+    fun setSelectedStyle(style: Style){
         this.selectedStyle = style
         updateShapeBasedOnProperties()
         updateViews()
     }
 
     @JvmName("getSelectedStyle")
-    fun getSelectedStyle(): Double? {
+    fun getSelectedStyle(): Style? {
         return this.selectedStyle
     }
 
@@ -113,20 +171,28 @@ class Model(){
     private fun updateShapeBasedOnProperties(){
         this.selectedShape?.fill = this.selectedFillColor
         this.selectedShape?.stroke = this.selectedLineColor
-        this.selectedShape?.strokeWidth = this.selectedThickness
-        val c = this.selectedStyle
-        this.selectedShape?.strokeDashArray?.removeAll()
+        this.selectedShape?.strokeWidth = Thickness.Type2.getStyle(this.selectedThickness)
+
+        var dashSize = 20.0
+
+        if (this.selectedStyle == Style.Type1) {
+            dashSize = 1.0
+        }
+        if (this.selectedStyle == Style.Type2){
+            dashSize = 30.0
+        }
+        if (this.selectedStyle == Style.Type3){
+            dashSize = 50.0
+        }
         this.selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
-        println("hey i am here")
-        println("dash array " + this.selectedShape?.strokeDashArray)
-        this.selectedShape?.strokeDashArray?.addAll(c,c,c,c,c,c,c,c,c,c,c)
+        this.selectedShape?.strokeDashArray?.addAll(dashSize,dashSize,dashSize,dashSize,dashSize)
     }
 
     private fun updatePropertiesBasedOnShape(){
         if (this.selectedShape != null) {
             this.selectedFillColor = this.selectedShape?.fill as Color?
             this.selectedLineColor = this.selectedShape?.stroke as Color?
-            this.selectedThickness = this.selectedShape?.strokeWidth!!
+            this.selectedThickness = Thickness.Type1.getType(this.selectedShape?.strokeWidth!!)
             // the one with they style
         }
     }
