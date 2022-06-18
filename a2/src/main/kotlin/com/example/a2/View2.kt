@@ -14,6 +14,7 @@ import javafx.scene.shape.Shape
 
 class View2(private val model: Model): Pane(), IView{
     private var markBorder : Shape? = null
+    private var viewShape : Shape? = null
 
     private fun addNewShape(shape: Shape){
         this.children.add(shape)
@@ -64,21 +65,18 @@ class View2(private val model: Model): Pane(), IView{
 
     override fun update() {
         println("updating view 2")
-        println(model.selectedShape)
-        println(model.getSelectedTool())
-        if (model.selectedShape != null && model.getSelectedTool() != Tools.EraseTool) {
-            this.children.remove(model.selectedShape)
-            this.children.add(model.selectedShape)
+        if (this.viewShape != null && model.getSelectedTool() != Tools.EraseTool) {
+            this.children.remove(this.viewShape)
+            this.children.add(this.viewShape)
             if (this.markBorder != null){
                 this.children.remove(this.markBorder)
                 this.children.add(this.markBorder)
             }
         }
-        if (model.selectedShape != null && model.getSelectedTool() == Tools.EraseTool){
-            println("erasing")
-            this.children.remove(model.selectedShape)
+        if (this.viewShape != null && model.getSelectedTool() == Tools.EraseTool){
+            this.children.remove(this.viewShape)
         }
-        if (model.selectedShape != null && model.getSelectedTool() == Tools.SelectionTool){
+        if (this.viewShape != null && model.getSelectedTool() == Tools.SelectionTool){
             if (markBorder == null){
                 markBorder = Rectangle(model.markBorderX!!, model.markBorderY!!, model.markBorderWidth!!, model.markBorderHeight!!)
                 (markBorder as Rectangle).fill = Color.TRANSPARENT
@@ -88,7 +86,6 @@ class View2(private val model: Model): Pane(), IView{
                 this.children.add(markBorder)
             }
             else {
-                println("marking border info")
                 (markBorder as Rectangle).x = model.markBorderX!!
                 (markBorder as Rectangle).y = model.markBorderY!!
                 (markBorder as Rectangle).width = model.markBorderWidth!!
@@ -96,9 +93,18 @@ class View2(private val model: Model): Pane(), IView{
                 println(markBorder)
             }
         }
-        if (model.selectedShape == null && this.markBorder != null){
+        if (this.viewShape == null && this.markBorder != null){
             this.children.remove(this.markBorder)
             this.markBorder = null
         }
+        updateShapeBasedOnSelectedShape()
+    }
+
+    private fun updateShapeBasedOnSelectedShape(){
+        this.viewShape?.fill = model.selectedShape?.fill
+        this.viewShape?.stroke = model.selectedShape?.stroke
+        this.viewShape?.strokeWidth = model.selectedShape!!.strokeWidth
+        this.viewShape?.strokeDashArray?.removeAll(this.viewShape!!.strokeDashArray)
+        this.viewShape?.strokeDashArray?.addAll(model.selectedShape?.strokeDashArray!!)
     }
 }

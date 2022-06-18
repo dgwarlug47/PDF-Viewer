@@ -8,80 +8,14 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
-    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
-}
-
-enum class Style{
-    Type1,
-    Type2,
-    Type3;
-
-    fun getType(style: Double): Style{
-        if (style == 1.0){
-            return Type1
-        }
-        if (style == 20.0){
-            return Type2
-        }
-        return Type3
-    }
-
-    fun getStyle(style: Style): Double{
-        if (style == Type1){
-            return 1.0
-        }
-        if (style == Type2){
-            return 20.0
-        }
-            return 50.0
-    }
-}
-
-enum class Thickness{
-    Type1,
-    Type2,
-    Type3;
-
-    fun getType(style: Double): Thickness{
-        if (style == 10.0){
-            return Type1
-        }
-        if (style == 40.0){
-            return Type2
-        }
-        return Type3
-    }
-
-    fun getStyle(style: Thickness): Double{
-        if (style == Type1){
-            return 10.0
-        }
-        if (style == Type2){
-            return 30.0
-        }
-        return 60.0
-    }
-}
-
-enum class Tools{
-    SelectionTool,
-    EraseTool,
-    LineTool,
-    RectangleTool,
-    CircleTool,
-    FillTool
-}
 class Model(){
     private val views: ArrayList<IView> = ArrayList()
     val defaultColor = Color.CORAL
     private var selectedTool = Tools.SelectionTool
-    var selectedShape : Shape? = null
-    private var shapeMarker : Shape? = null
-    private var selectedFillColor : Color? = defaultColor
-    private var selectedLineColor : Color? = defaultColor
-    private var selectedThickness : Thickness = Thickness.Type1
-    private var selectedStyle: Style? = Style.Type1
+    private var pickedFillColor : Color? = defaultColor
+    private var pickedLineColor : Color? = defaultColor
+    private var pickedThickness : Thickness = Thickness.Type1
+    private var pickedStyle: Style? = Style.Type1
     val backgroundColor = Color.BEIGE
     var enterX : Double? = null
     var enterY : Double? = null
@@ -91,6 +25,9 @@ class Model(){
     var markBorderY: Double? = null
     var markBorderWidth: Double? = null
     var markBorderHeight: Double? = null
+
+    // selected shape
+    var selectedShape: SelectedShape? = null
 
     @JvmName("setSelectedTool1")
     fun setSelectedTool(tool: Tools) {
@@ -106,83 +43,74 @@ class Model(){
         return this.selectedTool
     }
 
-    @JvmName("setSelectedShape1")
-    fun setSelectedShape(shape: Shape?) {
-        this.selectedShape = shape
-        updateViews()
-    }
-
     @JvmName("setSelectedColor1")
-    fun setSelectedFillColor(color: Color?) {
-        this.selectedFillColor = color
-        updateShapeBasedOnProperties()
+    fun setPickedFillColor(color: Color?) {
+        this.pickedFillColor = color
+        this.updateSelectedShapeBasedOnProperties()
         updateViews()
     }
 
     @JvmName("getSelectedColor1")
-    fun getSelectedFillColor() : Color? {
-        return this.selectedFillColor
+    fun getPickedFillColor() : Color? {
+        return this.pickedFillColor
     }
 
     @JvmName("setSelectedLineColor1")
-    fun setSelectedLineColor(color: Color?) {
-        this.selectedLineColor = color
-        updateShapeBasedOnProperties()
+    fun setPickedLineColor(color: Color?) {
+        this.pickedLineColor = color
+        this.updateSelectedShapeBasedOnProperties()
         updateViews()
     }
 
     @JvmName("getSelectedLineColor1")
-    fun getSelectedLineColor() : Color? {
-        return this.selectedLineColor
+    fun getPickedLineColor() : Color? {
+        return this.pickedLineColor
     }
 
     @JvmName("setThickness")
-    fun setSelectedThickness(thickness: Thickness){
-        println("selecting thickness")
-        this.selectedThickness = thickness
-        updateShapeBasedOnProperties()
+    fun setPickedThickness(thickness: Thickness){
+        this.pickedThickness = thickness
+        this.updateSelectedShapeBasedOnProperties()
         markShape()
         updateViews()
     }
 
     @JvmName("getSelectedThickness")
-    fun getThickness(): Thickness{
-        return this.selectedThickness
+    fun getPickedThickness(): Thickness{
+        return this.pickedThickness
     }
 
     @JvmName("setSelectedStyle")
-    fun setSelectedStyle(style: Style){
-        println("selecting style")
-        this.selectedStyle = style
-        updateShapeBasedOnProperties()
+    fun setPickedStyle(style: Style){
+        this.updateSelectedShapeBasedOnProperties()
+        this.pickedStyle = style
         updateViews()
     }
 
     @JvmName("getSelectedStyle")
-    fun getSelectedStyle(): Style? {
-        return this.selectedStyle
+    fun getPickedStyle(): Style? {
+        return this.pickedStyle
     }
 
     private fun markShape(){
         val borderOffset = 14.0 + this.selectedShape!!.strokeWidth
-        if (this.selectedShape is Circle){
-            println("marking shape")
-            this.markBorderX = (this.selectedShape as Circle).centerX - (this.selectedShape as Circle).radius - borderOffset
-            this.markBorderY = (this.selectedShape as Circle).centerY - (this.selectedShape as Circle).radius - borderOffset
-            this.markBorderWidth = 2*(this.selectedShape as Circle).radius + 2 * borderOffset
-            this.markBorderHeight = 2*(this.selectedShape as Circle).radius + 2 * borderOffset
+        if (this.selectedShape?.type == ShapeTypes.Circle){
+            this.markBorderX = this.selectedShape!!.centerX - this.selectedShape!!.radius - borderOffset
+            this.markBorderY = this.selectedShape!!.centerY - this.selectedShape!!.radius - borderOffset
+            this.markBorderWidth = 2*this.selectedShape!!.radius + 2 * borderOffset
+            this.markBorderHeight = 2*this.selectedShape!!.radius + 2 * borderOffset
         }
-        if (this.selectedShape is Rectangle){
-            this.markBorderX = (this.selectedShape as Rectangle).x - borderOffset
-            this.markBorderY = (this.selectedShape as Rectangle).y - borderOffset
-            this.markBorderWidth = (this.selectedShape as Rectangle).width + 2 * borderOffset
-            this.markBorderHeight = (this.selectedShape as Rectangle).height + 2 * borderOffset
+        if (this.selectedShape?.type == ShapeTypes.Rectangle){
+            this.markBorderX = this.selectedShape!!.x - borderOffset
+            this.markBorderY = this.selectedShape!!.y - borderOffset
+            this.markBorderWidth = this.selectedShape!!.width + 2 * borderOffset
+            this.markBorderHeight = this.selectedShape!!.height + 2 * borderOffset
         }
-        if (this.selectedShape is Line){
-            val startX = (this.selectedShape as Line).startX
-            val startY = (this.selectedShape as Line).startY
-            val endX = (this.selectedShape as Line).endX
-            val endY = (this.selectedShape as Line).endY
+        if (this.selectedShape?.type == ShapeTypes.Line){
+            val startX = this.selectedShape!!.startX
+            val startY = this.selectedShape!!.startY
+            val endX = this.selectedShape!!.endX
+            val endY = this.selectedShape!!.endY
             this.markBorderX = min(startX, endX) - borderOffset
             this.markBorderY = min(startY, endY) - borderOffset
             this.markBorderWidth = max(startX, endX) - min(startX, endX) + 2*borderOffset
@@ -191,7 +119,6 @@ class Model(){
     }
 
     private fun unMarkShape(){
-        println("un marking shape")
         this.selectedShape = null
         this.markBorderHeight = null
         this.markBorderY = null
@@ -205,35 +132,60 @@ class Model(){
         }
     }
 
-    private fun updateShapeBasedOnProperties(){
-        println("updating shape based on properties")
-        println(this.selectedShape)
-        this.selectedShape?.fill = this.selectedFillColor
-        this.selectedShape?.stroke = this.selectedLineColor
-        this.selectedShape?.strokeWidth = Thickness.Type3.getStyle(this.selectedThickness)
+
+    private fun updatePickedPropertiesBasedOnSelectedShape(){
+        if (this.selectedShape != null) {
+            this.pickedFillColor = this.selectedShape?.fill
+            this.pickedLineColor = this.selectedShape?.stroke
+            this.pickedThickness = Thickness.Type1.getType(this.selectedShape?.strokeWidth!!)
+            this.pickedStyle = Style.Type1.getType(this.selectedShape?.strokeDashArray!![0])
+        }
+    }
+
+    private fun updateSelectedShapeBasedOnShape(shape: Shape){
+        this.selectedShape = SelectedShape()
+        if (shape is Rectangle) {
+            this.selectedShape?.type = ShapeTypes.Rectangle
+            this.selectedShape?.x = shape.x
+            this.selectedShape?.y = shape.y
+            this.selectedShape?.height = shape.height
+            this.selectedShape?.width = shape.width
+        }
+        if (shape is Line) {
+            this.selectedShape?.type = ShapeTypes.Line
+            this.selectedShape?.startX = shape.startX
+            this.selectedShape?.startY = shape.startY
+            this.selectedShape?.endX = shape.endX
+            this.selectedShape?.endY = shape.endY
+        }
+        if (shape is Circle){
+            this.selectedShape?.type = ShapeTypes.Line
+            this.selectedShape?.radius = shape.radius
+            this.selectedShape?.centerX = shape.centerX
+            this.selectedShape?.centerY = shape.centerY
+        }
+        this.selectedShape?.fill = shape.fill as Color
+        this.selectedShape?.stroke = shape.stroke as Color
+        this.selectedShape?.strokeDashArray = shape.strokeDashArray
+    }
+
+    private fun updateSelectedShapeBasedOnProperties(){
+        this.selectedShape?.fill = this.getPickedFillColor()!!
+        this.selectedShape?.stroke = this.getPickedLineColor()!!
+        this.selectedShape?.strokeWidth = Thickness.Type3.getStyle(this.getPickedThickness())
 
         var dashSize = 20.0
-
-        if (this.selectedStyle == Style.Type1) {
+        if (this.getPickedStyle() == Style.Type1) {
             dashSize = 1.0
         }
-        if (this.selectedStyle == Style.Type2){
+        if (this.getPickedStyle() == Style.Type2){
             dashSize = 30.0
         }
-        if (this.selectedStyle == Style.Type3){
+        if (this.getPickedStyle() == Style.Type3){
             dashSize = 50.0
         }
         this.selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
         this.selectedShape?.strokeDashArray?.addAll(dashSize,dashSize,dashSize,dashSize,dashSize)
-    }
-
-    private fun updatePropertiesBasedOnShape(){
-        if (this.selectedShape != null) {
-            this.selectedFillColor = this.selectedShape?.fill as Color?
-            this.selectedLineColor = this.selectedShape?.stroke as Color?
-            this.selectedThickness = Thickness.Type1.getType(this.selectedShape?.strokeWidth!!)
-            this.selectedStyle = Style.Type1.getType(this.selectedShape?.strokeDashArray!![0])
-        }
     }
 
     private fun shapePressedAction(shape: Shape){
@@ -241,8 +193,8 @@ class Model(){
             if (this.selectedShape != null){
                 this.unMarkShape()
             }
-            this.selectedShape = shape
-            updatePropertiesBasedOnShape()
+            updateSelectedShapeBasedOnShape(shape)
+            updatePickedPropertiesBasedOnSelectedShape()
             this.markShape()
         }
     }
@@ -254,8 +206,6 @@ class Model(){
 
 
     fun addNewShapeActions(shape: Shape){
-        this.selectedShape = shape
-        this.updateShapeBasedOnProperties()
         shape.onMousePressed = EventHandler {
             run{
                 println("shape was selected")
@@ -274,53 +224,53 @@ class Model(){
 
     fun paneDragged(e: MouseEvent){
         markShape()
-        if (this.selectedShape is Circle && this.selectedTool == Tools.CircleTool){
-            (this.selectedShape as Circle).radius = distance(e.x, (this.selectedShape as Circle).centerX, e.y, (this.selectedShape as Circle).centerY)
+        if (this.selectedShape?.type == ShapeTypes.Circle && this.selectedTool == Tools.CircleTool){
+            this.selectedShape?.radius = distance(e.x, this.selectedShape!!.centerX, e.y, this.selectedShape!!.centerY)
         }
 
-        if (this.selectedShape is Line && this.selectedTool == Tools.LineTool){
-            (this.selectedShape as Line).endX = e.x
-            (this.selectedShape as Line).endY = e.y
+        if (this.selectedShape?.type == ShapeTypes.Line && this.selectedTool == Tools.LineTool){
+            this.selectedShape?.endX = e.x
+            this.selectedShape?.endY = e.y
         }
 
-        if (this.selectedShape is Rectangle && this.selectedTool == Tools.RectangleTool){
-            val fixedPointX = (this.selectedShape as CustomizedRectangle).fixedPointX
-            val fixedPointY = (this.selectedShape as CustomizedRectangle).fixedPointY
+        if (this.selectedShape?.type == ShapeTypes.Rectangle && this.selectedTool == Tools.RectangleTool){
+            val fixedPointX = this.selectedShape!!.fixedPointX
+            val fixedPointY = this.selectedShape!!.fixedPointY
             if (e.x < fixedPointX) {
-                (this.selectedShape as Rectangle).x = e.x
-                (this.selectedShape as Rectangle).width = fixedPointX - e.x
+                this.selectedShape?.x = e.x
+                this.selectedShape?.width = fixedPointX - e.x
             }
             else {
-                (this.selectedShape as Rectangle).x = fixedPointX
-                (this.selectedShape as Rectangle).width = e.x - fixedPointX
+                this.selectedShape?.x = fixedPointX
+                this.selectedShape?.width = e.x - fixedPointX
             }
             if (e.y < fixedPointY){
-                (this.selectedShape as Rectangle).y = e.y
-                (this.selectedShape as Rectangle).height = fixedPointY - e.y
+                this.selectedShape?.y = e.y
+                this.selectedShape?.height = fixedPointY - e.y
             }
             else {
-                (this.selectedShape as Rectangle).y = fixedPointY
-                (this.selectedShape as Rectangle).height = e.y - fixedPointY
+                this.selectedShape?.y = fixedPointY
+                this.selectedShape?.height = e.y - fixedPointY
             }
         }
-        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Circle){
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape?.type == ShapeTypes.Circle){
             println("getting to the point")
-            (this.selectedShape as Circle).centerX = (this.selectedShape as Circle).centerX + e.x - this.enterX!!
-            (this.selectedShape as Circle).centerY = (this.selectedShape as Circle).centerY + e.y - this.enterY!!
+            this.selectedShape?.centerX = this.selectedShape!!.centerX + e.x - this.enterX!!
+            this.selectedShape?.centerY = this.selectedShape!!.centerY + e.y - this.enterY!!
             this.enterX = e.x
             this.enterY = e.y
         }
-        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Rectangle){
-            (this.selectedShape as Rectangle).x = (this.selectedShape as Rectangle).x + e.x - enterX!!
-            (this.selectedShape as Rectangle).y = (this.selectedShape as Rectangle).y + e.y - enterY!!
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape?.type == ShapeTypes.Rectangle){
+            this.selectedShape?.x = this.selectedShape!!.x + e.x - enterX!!
+            this.selectedShape?.y = this.selectedShape!!.y + e.y - enterY!!
             this.enterX = e.x
             this.enterY = e.y
         }
-        if (this.selectedTool == Tools.SelectionTool && this.selectedShape is Line){
-            (this.selectedShape as Line).startX = (this.selectedShape as Line).startX + e.x - enterX!!
-            (this.selectedShape as Line).endX = (this.selectedShape as Line).endX + e.x - enterX!!
-            (this.selectedShape as Line).startY = (this.selectedShape as Line).startY + e.y - enterY!!
-            (this.selectedShape as Line).endY = (this.selectedShape as Line).endY + e.y - enterY!!
+        if (this.selectedTool == Tools.SelectionTool && this.selectedShape?.type == ShapeTypes.Line){
+            this.selectedShape?.startX = this.selectedShape!!.startX + e.x - enterX!!
+            this.selectedShape?.endX = this.selectedShape!!.endX + e.x - enterX!!
+            this.selectedShape?.startY = this.selectedShape!!.startY + e.y - enterY!!
+            this.selectedShape?.endY = this.selectedShape!!.endY + e.y - enterY!!
             this.enterX = e.x
             this.enterY = e.y
         }
@@ -337,5 +287,8 @@ class Model(){
             view.update()
         }
     }
+}
 
+fun distance(x1: Double, x2: Double, y1:Double, y2:Double): Double{
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 }

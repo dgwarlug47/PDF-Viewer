@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.transform.Affine
 import java.io.FileInputStream
 import java.nio.file.Paths
-import java.security.KeyStore.TrustedCertificateEntry
 
 
 fun arrow(): javafx.scene.shape.Polygon{
@@ -64,25 +63,25 @@ class View1(private val model: Model): IView, StackPane(){
     override fun update() {
         if (model.selectedShape != null){
             println("doing the view1 update")
-            this.fillColorPicker.value = this.model.getSelectedFillColor()
-            this.lineColorPicker.value = this.model.getSelectedLineColor()
+            this.fillColorPicker.value = this.model.getPickedFillColor()
+            this.lineColorPicker.value = this.model.getPickedLineColor()
         }
-        if (model.getSelectedStyle() == Style.Type1) {
+        if (model.getPickedStyle() == Style.Type1) {
             this.styleButton1.isSelected = true
         }
-        if (model.getSelectedStyle() == Style.Type2){
+        if (model.getPickedStyle() == Style.Type2){
             this.styleButton2.isSelected = true
         }
-        if (model.getSelectedStyle() == Style.Type3){
+        if (model.getPickedStyle() == Style.Type3){
             this.styleButton3.isSelected = true
         }
-        if (model.getSelectedStyle() == Style.Type1) {
+        if (model.getPickedStyle() == Style.Type1) {
             this.styleButton1.isSelected = true
         }
-        if (model.getSelectedStyle() == Style.Type2){
+        if (model.getPickedStyle() == Style.Type2){
             this.styleButton2.isSelected = true
         }
-        if (model.getSelectedStyle() == Style.Type3){
+        if (model.getPickedStyle() == Style.Type3){
             this.styleButton3.isSelected = true
         }
     }
@@ -178,7 +177,7 @@ class View1(private val model: Model): IView, StackPane(){
         fillColorPicker.value = model.defaultColor
         fillColorVBox.children.add(fillColorPicker)
         fillColorPicker.setOnAction {
-            model.setSelectedFillColor(fillColorPicker.value)
+            model.setPickedFillColor(fillColorPicker.value)
         }
 
         // lineColorPicker
@@ -188,7 +187,7 @@ class View1(private val model: Model): IView, StackPane(){
         lineColorPicker.value = model.defaultColor
         lineColorVBox.children.add(lineColorPicker)
         lineColorPicker.setOnAction {
-            model.setSelectedLineColor(lineColorPicker.value)
+            model.setPickedLineColor(lineColorPicker.value)
         }
 
         // lineTool Button
@@ -208,31 +207,31 @@ class View1(private val model: Model): IView, StackPane(){
         // thickness
         hbox4.children.add(thicknessButton1)
         thicknessButton1.setOnAction {
-            model.setSelectedThickness(Thickness.Type1)
+            model.setPickedThickness(Thickness.Type1)
         }
         hbox4.children.add(thicknessButton2)
         thicknessButton2.setOnAction {
-            model.setSelectedThickness(Thickness.Type2)
+            model.setPickedThickness(Thickness.Type2)
         }
         hbox4.children.add(thicknessButton3)
         thicknessButton3.setOnAction {
-            model.setSelectedThickness(Thickness.Type3)
+            model.setPickedThickness(Thickness.Type3)
         }
 
         // style
         hbox5.children.add(styleButton1)
         styleButton1.setOnAction {
-            model.setSelectedStyle(Style.Type1)
+            model.setPickedStyle(Style.Type1)
         }
 
         hbox5.children.add(styleButton2)
         styleButton2.setOnAction {
-            model.setSelectedStyle(Style.Type2)
+            model.setPickedStyle(Style.Type2)
         }
 
         hbox5.children.add(styleButton3)
         styleButton3.setOnAction {
-            model.setSelectedStyle(Style.Type3)
+            model.setPickedStyle(Style.Type3)
         }
     }
 }
