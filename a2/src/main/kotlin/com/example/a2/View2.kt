@@ -18,13 +18,19 @@ class View2(private val model: Model): Pane(), IView{
 
     private fun addNewShape(shape: Shape){
         this.children.add(shape)
-        model.updateSelectedShapeBasedOnShape(shape)
-        shape.onMousePressed = EventHandler {
+        initializeShape()
+        model.updateSelectedShapeBasedOnShape(shape!!)
+        println("a bit after")
+        println(model.selectedShape!!.strokeDashArray)
+        shape!!.onMousePressed = EventHandler {
             run{
                 if (model.getSelectedTool() == Tools.SelectionTool) {
                     viewShape = shape
                 }
-                model.shapePressed(shape)
+                if (model.getSelectedTool() == Tools.EraseTool){
+                    this.children.remove(shape)
+                }
+                model.shapePressed(shape!!)
             }
         }
         shape.onMouseDragReleased = EventHandler {
@@ -32,6 +38,7 @@ class View2(private val model: Model): Pane(), IView{
                 model.shapeDragReleased()
             }
         }
+        update()
     }
 
     init{
@@ -81,6 +88,10 @@ class View2(private val model: Model): Pane(), IView{
 
     override fun update() {
         println("updating view 2")
+        println("selected shape fill color")
+        println(model.selectedShape?.strokeDashArray)
+        println("shape fill color")
+        println(viewShape?.strokeDashArray)
         if (model.selectedShape == null){
             viewShape = null
         }
@@ -118,6 +129,7 @@ class View2(private val model: Model): Pane(), IView{
         updateViewShapeBasedOnSelectedShape()
         println("view shape at the end of update view2")
         println(viewShape)
+        println(viewShape?.strokeDashArray)
     }
 
     private fun updateViewShapeBasedOnSelectedShape(){
@@ -144,5 +156,14 @@ class View2(private val model: Model): Pane(), IView{
             (viewShape as Circle).centerX = model.selectedShape?.centerX!!
             (viewShape as Circle).centerY = model.selectedShape?.centerY!!
         }
+    }
+    private fun initializeShape(){
+        viewShape!!.fill = model.getPickedFillColor()
+        viewShape!!.stroke = model.getPickedLineColor()
+        viewShape!!.strokeWidth = Thickness.Type1.getStyle(model.getPickedThickness())
+        viewShape!!.strokeDashArray.removeAll(viewShape!!.strokeDashArray)
+        viewShape!!.strokeDashArray.addAll(model.createDashedArrayBasedOnPickedStyle())
+        println("uol")
+        println(viewShape!!.strokeDashArray)
     }
 }

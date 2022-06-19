@@ -67,7 +67,7 @@ class Model(){
     @JvmName("setThickness")
     fun setPickedThickness(thickness: Thickness){
         this.pickedThickness = thickness
-        this.updateSelectedShapeBasedOnProperties()
+        selectedShape?.strokeWidth = Thickness.Type1.getStyle(pickedThickness)
         updateMarkedShape()
         updateViews()
     }
@@ -79,8 +79,8 @@ class Model(){
 
     @JvmName("setSelectedStyle")
     fun setPickedStyle(style: Style){
-        this.updateSelectedShapeBasedOnProperties()
         this.pickedStyle = style
+        selectedShape?.strokeDashArray = createDashedArrayBasedOnPickedStyle()
         updateViews()
     }
 
@@ -90,6 +90,9 @@ class Model(){
     }
 
     private fun updateMarkedShape(){
+        if (selectedShape == null){
+            return
+        }
         val borderOffset = 14.0 + this.selectedShape!!.strokeWidth
         if (this.selectedShape?.type == ShapeTypes.Circle){
             this.markBorderX = this.selectedShape!!.centerX - this.selectedShape!!.radius - borderOffset
@@ -171,6 +174,8 @@ class Model(){
             this.selectedShape?.centerX = shape.centerX
             this.selectedShape?.centerY = shape.centerY
         }
+        println("shape fill messi")
+        println(shape.fill)
         if (shape.fill == null){
             this.selectedShape?.fill = this.getPickedFillColor()!!
         }
@@ -184,27 +189,33 @@ class Model(){
             this.selectedShape?.stroke = shape.stroke as Color
         }
         if ((shape.strokeDashArray).size == 0){
-            updateDashedArrayBasedonPickedStyle()
+            updateDashedArrayBasedOnPickedStyle()
         }
         else{
-            this.selectedShape?.strokeDashArray = shape.strokeDashArray
+            this.selectedShape?.strokeDashArray?.removeAll(shape.strokeDashArray)
+            this.selectedShape?.strokeDashArray?.addAll(shape.strokeDashArray)
         }
+        selectedShape?.strokeWidth = shape.strokeWidth
     }
 
     private fun updateSelectedShapeBasedOnProperties(){
         this.selectedShape?.fill = this.getPickedFillColor()!!
         this.selectedShape?.stroke = this.getPickedLineColor()!!
         this.selectedShape?.strokeWidth = Thickness.Type3.getStyle(this.getPickedThickness())
-
-        updateDashedArrayBasedonPickedStyle()
+        updateDashedArrayBasedOnPickedStyle()
     }
 
-    private fun updateDashedArrayBasedonPickedStyle(){
+    fun updateDashedArrayBasedOnPickedStyle(){
+        selectedShape!!.strokeDashArray = createDashedArrayBasedOnPickedStyle()
+    }
+
+    fun createDashedArrayBasedOnPickedStyle(): MutableList<Double>{
+        val dashArray : MutableList<Double> = mutableListOf()
         val dashSize = Style.Type1.getStyle(pickedStyle!!)
-        selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
-        selectedShape!!.strokeDashArray.add(dashSize)
-        selectedShape!!.strokeDashArray.add(dashSize)
-        selectedShape!!.strokeDashArray.add(dashSize)
+        dashArray.add(dashSize)
+        dashArray.add(dashSize)
+        dashArray.add(dashSize)
+        return dashArray
     }
 
     fun shapePressed(shape: Shape){
