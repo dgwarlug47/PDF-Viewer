@@ -1,7 +1,6 @@
 package com.example.a2
 import javafx.application.Application
 import javafx.scene.Scene
-import javafx.scene.chart.PieChart.Data
 import javafx.scene.control.ScrollPane
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
@@ -30,13 +29,11 @@ class MVC : Application() {
         borderPane.setOnKeyReleased {
                 e ->
             run {
-                println("BBBBBBB")
                 println(e.code)
                 if (e.code == KeyCode.ESCAPE) {
                     model.escape()
                 }
                 if (e.code == KeyCode.DELETE || e.code == KeyCode.BACK_SPACE){
-                    println("AAAAA")
                     model.delete()
                 }
             }

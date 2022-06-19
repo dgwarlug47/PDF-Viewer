@@ -1,12 +1,6 @@
 package com.example.a2
-import com.google.gson.Gson
-import javafx.beans.Observable
-import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.geometry.Insets
-import javafx.scene.Node
-import javafx.scene.input.KeyCode
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
@@ -122,6 +116,32 @@ class View2(private val model: Model): Pane(), IView{
         if (model.selectedShape == null){
             viewShape = null
         }
+        if (model.getSelectedTool() == Tools.SelectionTool){
+            if (model.editCutPressed){
+                if (this.markBorder != null){
+                    this.children.remove(this.markBorder)
+                }
+                model.editCutPressed = false
+                children.remove(viewShape)
+                model.copiedShape = viewShape?.let { copyNode(it) } as Shape
+                updateViewShapeBasedOnSelectedShape()
+                return
+            }
+            if (model.editCopyPressed){
+                model.editCopyPressed = false
+                model.copiedShape = viewShape?.let { copyNode(it) } as Shape
+                updateViewShapeBasedOnSelectedShape()
+                return
+            }
+            if (model.editPastePressed){
+                if (!children.contains(model.copiedShape)) {
+                    saveOldShape(model.copiedShape as Shape)
+                }
+                model.editPastePressed = false
+                updateViewShapeBasedOnSelectedShape()
+                return
+            }
+        }
         if (this.viewShape != null && model.getSelectedTool() != Tools.EraseTool) {
             this.children.remove(this.viewShape)
             this.children.add(this.viewShape)
@@ -135,8 +155,6 @@ class View2(private val model: Model): Pane(), IView{
             viewShape = null
         }
         if (viewShape != null && model.getSelectedTool() == Tools.SelectionTool && model.deletePressed){
-            println("very confused")
-            println(viewShape)
             model.deletePressed = false
             children.remove(viewShape)
             viewShape = null

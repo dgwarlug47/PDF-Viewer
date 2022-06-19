@@ -1,6 +1,5 @@
 package com.example.a2
 
-import com.google.gson.Gson
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
@@ -31,6 +30,12 @@ class Model(val database: Database, val mvc: MVC){
 
     // deletePressed
     var deletePressed: Boolean = false
+
+    // copied shape
+    var editCutPressed: Boolean = false
+    var editCopyPressed: Boolean = false
+    var editPastePressed: Boolean = false
+    var copiedShape: Shape? = null
 
     fun clone(): Model{
         val cloneModel = Model(database, mvc)
@@ -356,6 +361,21 @@ class Model(val database: Database, val mvc: MVC){
         }
         updateMarkedShape()
         this.updateViews()
+    }
+
+    fun editCut(){
+        editCutPressed = true
+        updateViews()
+    }
+
+    fun editCopy(){
+        editCopyPressed = true
+        updateViews()
+    }
+
+    fun editPasted(){
+        editPastePressed = true
+        updateViews()
     }
 
     fun storeSelf(drawingName: String){
