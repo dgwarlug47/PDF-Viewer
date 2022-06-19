@@ -18,7 +18,20 @@ class View2(private val model: Model): Pane(), IView{
 
     private fun addNewShape(shape: Shape){
         this.children.add(shape)
-        this.model.addNewShapeActions(shape)
+        model.updateSelectedShapeBasedOnShape(shape)
+        shape.onMousePressed = EventHandler {
+            run{
+                if (model.getSelectedTool() == Tools.SelectionTool) {
+                    viewShape = shape
+                }
+                model.shapePressed(shape)
+            }
+        }
+        shape.onMouseDragReleased = EventHandler {
+            run{
+                model.shapeDragReleased()
+            }
+        }
     }
 
     init{
@@ -33,14 +46,17 @@ class View2(private val model: Model): Pane(), IView{
             run{
                 if (model.getSelectedTool() == Tools.CircleTool) {
                     val circle = Circle(e.x, e.y, 10.0)
+                    this.viewShape = circle
                     this.addNewShape(circle)
                 }
                 if (model.getSelectedTool() == Tools.RectangleTool){
-                    val rectangle = CustomizedRectangle(e.x, e.y, 20.0, 20.0)
+                    val rectangle = Rectangle(e.x, e.y, 20.0, 20.0)
+                    this.viewShape = rectangle
                     this.addNewShape(rectangle)
                 }
                 if (model.getSelectedTool() == Tools.LineTool){
                     val line = Line(e.x, e.y, e.x+20, e.y+20)
+                    this.viewShape = line
                     this.addNewShape(line)
                 }
                 if (model.getSelectedTool() == Tools.SelectionTool) {
@@ -58,13 +74,16 @@ class View2(private val model: Model): Pane(), IView{
         }
         this.setOnMouseReleased {
             run{
-                model.mouseReleased()
+                model.paneMouseReleased()
             }
         }
     }
 
     override fun update() {
         println("updating view 2")
+        if (model.selectedShape == null){
+            viewShape = null
+        }
         if (this.viewShape != null && model.getSelectedTool() != Tools.EraseTool) {
             this.children.remove(this.viewShape)
             this.children.add(this.viewShape)
@@ -90,21 +109,40 @@ class View2(private val model: Model): Pane(), IView{
                 (markBorder as Rectangle).y = model.markBorderY!!
                 (markBorder as Rectangle).width = model.markBorderWidth!!
                 (markBorder as Rectangle).height = model.markBorderHeight!!
-                println(markBorder)
             }
         }
         if (this.viewShape == null && this.markBorder != null){
             this.children.remove(this.markBorder)
             this.markBorder = null
         }
-        updateShapeBasedOnSelectedShape()
+        updateViewShapeBasedOnSelectedShape()
+        println("view shape at the end of update view2")
+        println(viewShape)
     }
 
-    private fun updateShapeBasedOnSelectedShape(){
+    private fun updateViewShapeBasedOnSelectedShape(){
         this.viewShape?.fill = model.selectedShape?.fill
         this.viewShape?.stroke = model.selectedShape?.stroke
         this.viewShape?.strokeWidth = model.selectedShape!!.strokeWidth
-        this.viewShape?.strokeDashArray?.removeAll(this.viewShape!!.strokeDashArray)
+        this.viewShape?.strokeDashArray?.removeAll(viewShape!!.strokeDashArray)
         this.viewShape?.strokeDashArray?.addAll(model.selectedShape?.strokeDashArray!!)
+
+        if (viewShape is Rectangle) {
+            (viewShape as Rectangle).x = model.selectedShape?.x!!
+            (viewShape as Rectangle).y = model.selectedShape?.y!!
+            (viewShape as Rectangle).height = model.selectedShape?.height!!
+            (viewShape as Rectangle).width = model.selectedShape?.width!!
+        }
+        if (viewShape is Line) {
+            (viewShape as Line).startX = model.selectedShape?.startX!!
+            (viewShape as Line).startY = model.selectedShape?.startY!!
+            (viewShape as Line).endX = model.selectedShape?.endX!!
+            (viewShape as Line).endY = model.selectedShape?.endY!!
+        }
+        if (viewShape is Circle){
+            (viewShape as Circle).radius = model.selectedShape?.radius!!
+            (viewShape as Circle).centerX = model.selectedShape?.centerX!!
+            (viewShape as Circle).centerY = model.selectedShape?.centerY!!
+        }
     }
 }

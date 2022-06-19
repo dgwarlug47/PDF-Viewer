@@ -5,7 +5,9 @@ import javafx.scene.paint.Color
 
 class SelectedShape(){
     var type: ShapeTypes = ShapeTypes.Rectangle
-    var strokeWidth: Double = 0.0
+    var strokeWidth: Double = Thickness.Type1.getStyle(Thickness.Type1)
+    var strokeDashArray : MutableList<Double> = mutableListOf(Style.Type1.getStyle(Style.Type1))
+
     // rectangle
     var x: Double = 0.0
     var y: Double = 0.0
@@ -25,7 +27,6 @@ class SelectedShape(){
 
     var stroke: Color = Color.CORAL
     var fill: Color = Color.ALICEBLUE
-    var strokeDashArray : ObservableList<Double> = mutableListOf<Double>() as ObservableList<Double>
 }
 
 enum class ShapeTypes{

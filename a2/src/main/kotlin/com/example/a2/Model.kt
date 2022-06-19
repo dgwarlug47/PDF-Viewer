@@ -1,6 +1,5 @@
 package com.example.a2
 
-import javafx.event.EventHandler
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
@@ -32,9 +31,7 @@ class Model(){
     @JvmName("setSelectedTool1")
     fun setSelectedTool(tool: Tools) {
         this.selectedTool = tool
-        if (this.selectedTool != Tools.SelectionTool){
-            this.unMarkShape()
-        }
+        unMarkShape()
         updateViews()
     }
 
@@ -71,7 +68,7 @@ class Model(){
     fun setPickedThickness(thickness: Thickness){
         this.pickedThickness = thickness
         this.updateSelectedShapeBasedOnProperties()
-        markShape()
+        updateMarkedShape()
         updateViews()
     }
 
@@ -92,7 +89,7 @@ class Model(){
         return this.pickedStyle
     }
 
-    private fun markShape(){
+    private fun updateMarkedShape(){
         val borderOffset = 14.0 + this.selectedShape!!.strokeWidth
         if (this.selectedShape?.type == ShapeTypes.Circle){
             this.markBorderX = this.selectedShape!!.centerX - this.selectedShape!!.radius - borderOffset
@@ -126,9 +123,17 @@ class Model(){
         this.markBorderWidth = null
     }
 
-    fun mouseReleased(){
+    fun shapeDragReleased(){
+        println("shape drag releasing")
+        unMarkShape()
+        updateViews()
+    }
+
+    fun paneMouseReleased(){
         if (this.selectedTool != Tools.SelectionTool) {
+            println("pane mouse releasing")
             unMarkShape()
+            updateViews()
         }
     }
 
@@ -142,14 +147,16 @@ class Model(){
         }
     }
 
-    private fun updateSelectedShapeBasedOnShape(shape: Shape){
-        this.selectedShape = SelectedShape()
+    fun updateSelectedShapeBasedOnShape(shape: Shape){
+        selectedShape = SelectedShape()
         if (shape is Rectangle) {
             this.selectedShape?.type = ShapeTypes.Rectangle
             this.selectedShape?.x = shape.x
             this.selectedShape?.y = shape.y
             this.selectedShape?.height = shape.height
             this.selectedShape?.width = shape.width
+            this.selectedShape?.fixedPointX = shape.x
+            this.selectedShape?.fixedPointY = shape.y
         }
         if (shape is Line) {
             this.selectedShape?.type = ShapeTypes.Line
@@ -159,14 +166,29 @@ class Model(){
             this.selectedShape?.endY = shape.endY
         }
         if (shape is Circle){
-            this.selectedShape?.type = ShapeTypes.Line
+            this.selectedShape?.type = ShapeTypes.Circle
             this.selectedShape?.radius = shape.radius
             this.selectedShape?.centerX = shape.centerX
             this.selectedShape?.centerY = shape.centerY
         }
-        this.selectedShape?.fill = shape.fill as Color
-        this.selectedShape?.stroke = shape.stroke as Color
-        this.selectedShape?.strokeDashArray = shape.strokeDashArray
+        if (shape.fill == null){
+            this.selectedShape?.fill = this.getPickedFillColor()!!
+        }
+        else{
+            this.selectedShape?.fill = shape.fill as Color
+        }
+        if (shape.stroke == null){
+            this.selectedShape?.stroke = this.getPickedLineColor()!!
+        }
+        else{
+            this.selectedShape?.stroke = shape.stroke as Color
+        }
+        if ((shape.strokeDashArray).size == 0){
+            updateDashedArrayBasedonPickedStyle()
+        }
+        else{
+            this.selectedShape?.strokeDashArray = shape.strokeDashArray
+        }
     }
 
     private fun updateSelectedShapeBasedOnProperties(){
@@ -174,29 +196,27 @@ class Model(){
         this.selectedShape?.stroke = this.getPickedLineColor()!!
         this.selectedShape?.strokeWidth = Thickness.Type3.getStyle(this.getPickedThickness())
 
-        var dashSize = 20.0
-        if (this.getPickedStyle() == Style.Type1) {
-            dashSize = 1.0
-        }
-        if (this.getPickedStyle() == Style.Type2){
-            dashSize = 30.0
-        }
-        if (this.getPickedStyle() == Style.Type3){
-            dashSize = 50.0
-        }
-        this.selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
-        this.selectedShape?.strokeDashArray?.addAll(dashSize,dashSize,dashSize,dashSize,dashSize)
+        updateDashedArrayBasedonPickedStyle()
     }
 
-    private fun shapePressedAction(shape: Shape){
+    private fun updateDashedArrayBasedonPickedStyle(){
+        val dashSize = Style.Type1.getStyle(pickedStyle!!)
+        selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
+        selectedShape!!.strokeDashArray.add(dashSize)
+        selectedShape!!.strokeDashArray.add(dashSize)
+        selectedShape!!.strokeDashArray.add(dashSize)
+    }
+
+    fun shapePressed(shape: Shape){
         if (this.selectedTool == Tools.SelectionTool){
             if (this.selectedShape != null){
                 this.unMarkShape()
             }
             updateSelectedShapeBasedOnShape(shape)
             updatePickedPropertiesBasedOnSelectedShape()
-            this.markShape()
+            updateMarkedShape()
         }
+        updateViews()
     }
 
     fun paneSelected(e: MouseEvent){
@@ -205,25 +225,9 @@ class Model(){
     }
 
 
-    fun addNewShapeActions(shape: Shape){
-        shape.onMousePressed = EventHandler {
-            run{
-                println("shape was selected")
-                this.shapePressedAction(shape)
-                updateViews()
-            }
-        }
-        shape.onMousePressed
-        shape.onMouseDragReleased = EventHandler {
-            run{
-                this.unMarkShape()
-                updateViews()
-            }
-        }
-    }
-
     fun paneDragged(e: MouseEvent){
-        markShape()
+        println("selectedShape on pane dragged")
+        println(selectedShape)
         if (this.selectedShape?.type == ShapeTypes.Circle && this.selectedTool == Tools.CircleTool){
             this.selectedShape?.radius = distance(e.x, this.selectedShape!!.centerX, e.y, this.selectedShape!!.centerY)
         }
@@ -254,7 +258,6 @@ class Model(){
             }
         }
         if (this.selectedTool == Tools.SelectionTool && this.selectedShape?.type == ShapeTypes.Circle){
-            println("getting to the point")
             this.selectedShape?.centerX = this.selectedShape!!.centerX + e.x - this.enterX!!
             this.selectedShape?.centerY = this.selectedShape!!.centerY + e.y - this.enterY!!
             this.enterX = e.x
@@ -274,6 +277,7 @@ class Model(){
             this.enterX = e.x
             this.enterY = e.y
         }
+        updateMarkedShape()
         this.updateViews()
     }
 
@@ -282,7 +286,7 @@ class Model(){
         view.update()
     }
     private fun updateViews(){
-        println("updating")
+        println("updating all views")
         for (view in this.views){
             view.update()
         }
