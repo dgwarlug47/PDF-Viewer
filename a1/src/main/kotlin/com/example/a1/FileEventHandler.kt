@@ -107,7 +107,6 @@ class FileEventHandler {
                 alert.contentText = "The new path location you added is invalid"
                 alert.showAndWait()
             }
-
         }
     }
 

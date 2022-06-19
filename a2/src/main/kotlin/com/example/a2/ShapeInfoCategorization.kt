@@ -53,7 +53,7 @@ enum class Style{
         if (style == 1.0){
             return Type1
         }
-        if (style == 20.0){
+        if (style == 15.0){
             return Type2
         }
         return Type3
@@ -64,9 +64,9 @@ enum class Style{
             return 1.0
         }
         if (style == Type2){
-            return 20.0
+            return 15.0
         }
-        return 50.0
+        return 25.0
     }
 }
 
@@ -76,10 +76,10 @@ enum class Thickness{
     Type3;
 
     fun getType(style: Double): Thickness{
-        if (style == 10.0){
+        if (style == 3.0){
             return Type1
         }
-        if (style == 40.0){
+        if (style == 6.0){
             return Type2
         }
         return Type3
@@ -87,11 +87,11 @@ enum class Thickness{
 
     fun getStyle(style: Thickness): Double{
         if (style == Type1){
-            return 10.0
+            return 3.0
         }
         if (style == Type2){
-            return 30.0
+            return 6.0
         }
-        return 60.0
+        return 10.0
     }
 }

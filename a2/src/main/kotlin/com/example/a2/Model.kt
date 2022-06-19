@@ -1,5 +1,6 @@
 package com.example.a2
 
+import com.google.gson.Gson
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.*
@@ -7,7 +8,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-class Model(){
+class Model(val database: Database, val mvc: MVC){
     private val views: ArrayList<IView> = ArrayList()
     val defaultColor = Color.CORAL
     private var selectedTool = Tools.SelectionTool
@@ -27,6 +28,37 @@ class Model(){
 
     // selected shape
     var selectedShape: SelectedShape? = null
+
+    fun clone(): Model{
+        val cloneModel = Model(database, mvc)
+        cloneModel.selectedTool = selectedTool
+        cloneModel.pickedFillColor = pickedFillColor
+        cloneModel.pickedLineColor = pickedLineColor
+        cloneModel.pickedThickness = pickedThickness
+        cloneModel.pickedStyle = pickedStyle
+        cloneModel.enterX = enterX
+        cloneModel.enterY = enterY
+        cloneModel.markBorderX = markBorderX
+        cloneModel.markBorderY = markBorderY
+        cloneModel.markBorderWidth = markBorderWidth
+        cloneModel.markBorderHeight = markBorderHeight
+        cloneModel.selectedShape = null
+
+        return cloneModel
+    }
+
+    fun newCanvas(){
+        mvc.newCanvas()
+    }
+    fun loadViewModel(drawingName: String){
+        mvc.model = database.getModel(drawingName)
+        mvc.view1 = database.getView1(drawingName)
+        mvc.view2 = database.getView2(drawingName)
+        mvc.newCanvas()
+    }
+    fun getDrawingNames(): MutableList<String>{
+        return database.drawingNames
+    }
 
     @JvmName("setSelectedTool1")
     fun setSelectedTool(tool: Tools) {
@@ -206,7 +238,7 @@ class Model(){
     }
 
     fun updateDashedArrayBasedOnPickedStyle(){
-        selectedShape!!.strokeDashArray = createDashedArrayBasedOnPickedStyle()
+        selectedShape?.strokeDashArray = createDashedArrayBasedOnPickedStyle()
     }
 
     fun createDashedArrayBasedOnPickedStyle(): MutableList<Double>{
@@ -217,6 +249,16 @@ class Model(){
         dashArray.add(dashSize)
         return dashArray
     }
+
+    fun createDashedArrayBasedOnStyle(style: Style): MutableList<Double>{
+        val dashArray : MutableList<Double> = mutableListOf()
+        val dashSize = Style.Type1.getStyle(style)
+        dashArray.add(dashSize)
+        dashArray.add(dashSize)
+        dashArray.add(dashSize)
+        return dashArray
+    }
+
 
     fun shapePressed(shape: Shape){
         if (this.selectedTool == Tools.SelectionTool){
@@ -290,6 +332,11 @@ class Model(){
         }
         updateMarkedShape()
         this.updateViews()
+    }
+
+    fun storeSelf(drawingName: String){
+        val cloneModel = clone()
+        database.storeViewModel(drawingName, cloneModel, View1(cloneModel), (views[1] as View2).clone(cloneModel))
     }
 
     fun addView(view: IView) {

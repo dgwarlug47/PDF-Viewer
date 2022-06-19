@@ -1,6 +1,10 @@
 package com.example.a2
+import com.google.gson.Gson
+import javafx.beans.Observable
+import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.geometry.Insets
+import javafx.scene.Node
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -16,13 +20,20 @@ class View2(private val model: Model): Pane(), IView{
     private var markBorder : Shape? = null
     private var viewShape : Shape? = null
 
-    private fun addNewShape(shape: Shape){
+    fun clone(cloneModel: Model): View2{
+        val newView2 = View2(cloneModel)
+        for (child in children){
+            newView2.saveOldShape(copyNode(child) as Shape)
+        }
+        //val stringModel = Gson().toJson(this.children[0], Node::class.java)
+        //val copyModel = Gson().fromJson<Node>(stringModel, Node::class.java)
+        //newView2.children.add(copyModel)
+        return newView2
+    }
+
+    private fun saveOldShape(shape: Shape){
         this.children.add(shape)
-        initializeShape()
-        model.updateSelectedShapeBasedOnShape(shape!!)
-        println("a bit after")
-        println(model.selectedShape!!.strokeDashArray)
-        shape!!.onMousePressed = EventHandler {
+        shape.onMousePressed = EventHandler {
             run{
                 if (model.getSelectedTool() == Tools.SelectionTool) {
                     viewShape = shape
@@ -30,7 +41,31 @@ class View2(private val model: Model): Pane(), IView{
                 if (model.getSelectedTool() == Tools.EraseTool){
                     this.children.remove(shape)
                 }
-                model.shapePressed(shape!!)
+                model.shapePressed(shape)
+            }
+        }
+        shape.onMouseDragReleased = EventHandler {
+            run{
+                model.shapeDragReleased()
+            }
+        }
+    }
+
+    private fun addNewShape(shape: Shape){
+        this.children.add(shape)
+        initializeShape()
+        model.updateSelectedShapeBasedOnShape(shape!!)
+        println("a bit after")
+        println(model.selectedShape!!.strokeDashArray)
+        shape.onMousePressed = EventHandler {
+            run{
+                if (model.getSelectedTool() == Tools.SelectionTool) {
+                    viewShape = shape
+                }
+                if (model.getSelectedTool() == Tools.EraseTool){
+                    this.children.remove(shape)
+                }
+                model.shapePressed(shape)
             }
         }
         shape.onMouseDragReleased = EventHandler {
@@ -127,9 +162,6 @@ class View2(private val model: Model): Pane(), IView{
             this.markBorder = null
         }
         updateViewShapeBasedOnSelectedShape()
-        println("view shape at the end of update view2")
-        println(viewShape)
-        println(viewShape?.strokeDashArray)
     }
 
     private fun updateViewShapeBasedOnSelectedShape(){
@@ -163,7 +195,5 @@ class View2(private val model: Model): Pane(), IView{
         viewShape!!.strokeWidth = Thickness.Type1.getStyle(model.getPickedThickness())
         viewShape!!.strokeDashArray.removeAll(viewShape!!.strokeDashArray)
         viewShape!!.strokeDashArray.addAll(model.createDashedArrayBasedOnPickedStyle())
-        println("uol")
-        println(viewShape!!.strokeDashArray)
     }
 }
