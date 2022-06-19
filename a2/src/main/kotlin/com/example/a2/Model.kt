@@ -29,6 +29,9 @@ class Model(val database: Database, val mvc: MVC){
     // selected shape
     var selectedShape: SelectedShape? = null
 
+    // deletePressed
+    var deletePressed: Boolean = false
+
     fun clone(): Model{
         val cloneModel = Model(database, mvc)
         cloneModel.selectedTool = selectedTool
@@ -150,7 +153,22 @@ class Model(val database: Database, val mvc: MVC){
         }
     }
 
-    private fun unMarkShape(){
+    fun escape(){
+        if (getSelectedTool() == Tools.SelectionTool) {
+            unMarkShape()
+            updateViews()
+        }
+    }
+
+    fun delete(){
+        if (getSelectedTool() == Tools.SelectionTool){
+            deletePressed = true
+            println("curry")
+            updateViews()
+        }
+    }
+
+    fun unMarkShape(){
         this.selectedShape = null
         this.markBorderHeight = null
         this.markBorderY = null
@@ -159,14 +177,12 @@ class Model(val database: Database, val mvc: MVC){
     }
 
     fun shapeDragReleased(){
-        println("shape drag releasing")
         unMarkShape()
         updateViews()
     }
 
     fun paneMouseReleased(){
         if (this.selectedTool != Tools.SelectionTool) {
-            println("pane mouse releasing")
             unMarkShape()
             updateViews()
         }
@@ -235,6 +251,11 @@ class Model(val database: Database, val mvc: MVC){
         updateDashedArrayBasedOnPickedStyle()
     }
 
+    private fun updateSelectedShapeBasedOnColourProperties(){
+        this.selectedShape!!.fill = this.getPickedFillColor()!!
+        this.selectedShape!!.stroke = this.getPickedLineColor()!!
+    }
+
     fun updateDashedArrayBasedOnPickedStyle(){
         selectedShape?.strokeDashArray = createDashedArrayBasedOnPickedStyle()
     }
@@ -266,15 +287,24 @@ class Model(val database: Database, val mvc: MVC){
         updateViews()
     }
 
-    fun paneSelected(e: MouseEvent){
+    fun shapePressedWhileFillTool(shape: Shape){
+        updateSelectedShapeBasedOnShape(shape)
+        this.updateSelectedShapeBasedOnColourProperties()
+        updateViews()
+    }
+
+    fun paneSelected(e: MouseEvent, childHit: Boolean){
+        println("this happened")
+        if (!childHit) {
+            this.unMarkShape()
+        }
+        updateViews()
         this.enterX = e.x
         this.enterY = e.y
     }
 
 
     fun paneDragged(e: MouseEvent){
-        println("selectedShape on pane dragged")
-        println(selectedShape)
         if (this.selectedShape?.type == ShapeTypes.Circle && this.selectedTool == Tools.CircleTool){
             this.selectedShape?.radius = distance(e.x, this.selectedShape!!.centerX, e.y, this.selectedShape!!.centerY)
         }
@@ -338,7 +368,6 @@ class Model(val database: Database, val mvc: MVC){
         view.update()
     }
     private fun updateViews(){
-        println("updating all views")
         for (view in this.views){
             view.update()
         }

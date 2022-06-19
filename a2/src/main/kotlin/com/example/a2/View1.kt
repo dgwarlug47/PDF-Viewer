@@ -41,7 +41,6 @@ class View1(private val model: Model): IView, StackPane(){
 
     override fun update() {
         if (model.selectedShape != null){
-            println("doing the view1 update")
             this.fillColorPicker.value = this.model.getPickedFillColor()
             this.lineColorPicker.value = this.model.getPickedLineColor()
         }
@@ -262,8 +261,6 @@ class View1(private val model: Model): IView, StackPane(){
         val styleLine3 = Line(20.0, 20.0, 20.0, 120.0)
         styleLine3.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine3.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type3))
-        println("god help")
-        println(styleLine3.strokeDashArray)
         styleButton3.graphic = styleLine3
     }
 }

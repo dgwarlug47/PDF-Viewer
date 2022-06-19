@@ -5,6 +5,7 @@ import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.Node
+import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -25,23 +26,24 @@ class View2(private val model: Model): Pane(), IView{
         for (child in children){
             newView2.saveOldShape(copyNode(child) as Shape)
         }
-        //val stringModel = Gson().toJson(this.children[0], Node::class.java)
-        //val copyModel = Gson().fromJson<Node>(stringModel, Node::class.java)
-        //newView2.children.add(copyModel)
         return newView2
     }
 
-    private fun saveOldShape(shape: Shape){
-        this.children.add(shape)
+    private fun registerShapeActions(shape: Shape){
         shape.onMousePressed = EventHandler {
             run{
                 if (model.getSelectedTool() == Tools.SelectionTool) {
                     viewShape = shape
+                    model.shapePressed(shape)
                 }
                 if (model.getSelectedTool() == Tools.EraseTool){
                     this.children.remove(shape)
+                    model.shapePressed(shape)
                 }
-                model.shapePressed(shape)
+                if (model.getSelectedTool() == Tools.FillTool){
+                    viewShape = shape
+                    model.shapePressedWhileFillTool(shape)
+                }
             }
         }
         shape.onMouseDragReleased = EventHandler {
@@ -49,40 +51,29 @@ class View2(private val model: Model): Pane(), IView{
                 model.shapeDragReleased()
             }
         }
+    }
+    private fun saveOldShape(shape: Shape){
+        this.children.add(shape)
+        registerShapeActions(shape)
     }
 
     private fun addNewShape(shape: Shape){
         this.children.add(shape)
         initializeShape()
-        model.updateSelectedShapeBasedOnShape(shape!!)
-        shape.onMousePressed = EventHandler {
-            run{
-                if (model.getSelectedTool() == Tools.SelectionTool) {
-                    viewShape = shape
-                }
-                if (model.getSelectedTool() == Tools.EraseTool){
-                    this.children.remove(shape)
-                }
-                model.shapePressed(shape)
-            }
-        }
-        shape.onMouseDragReleased = EventHandler {
-            run{
-                model.shapeDragReleased()
-            }
-        }
+        model.updateSelectedShapeBasedOnShape(shape)
+        registerShapeActions(shape)
         update()
     }
 
     init{
         // background
         this.background = Background(BackgroundFill(model.backgroundColor, CornerRadii.EMPTY, Insets.EMPTY))
-        val invisibleCircle = Circle(0.0, 0.0, 500.0)
+        val invisibleCircle = Circle(-700.0, -700.0, 500.0)
         invisibleCircle.fill = model.backgroundColor
         this.children.add(invisibleCircle)
 
-        val mousePressed  = EventHandler<MouseEvent>{
-            e ->
+        this.setOnMousePressed{
+                e ->
             run{
                 if (model.getSelectedTool() == Tools.CircleTool) {
                     val circle = Circle(e.x, e.y, 10.0)
@@ -100,11 +91,19 @@ class View2(private val model: Model): Pane(), IView{
                     this.addNewShape(line)
                 }
                 if (model.getSelectedTool() == Tools.SelectionTool) {
-                    this.model.paneSelected(e)
+                    var hitChild = false
+                    for (child in children){
+                        if ((child as Shape).fill == Color.BEIGE){
+                            continue
+                        }
+                        if (child.contains(e.x, e.y)){
+                            hitChild = true
+                        }
+                    }
+                    this.model.paneSelected(e, hitChild)
                 }
             }
         }
-        this.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressed)
 
         this.setOnMouseDragged {
             e ->
@@ -120,7 +119,6 @@ class View2(private val model: Model): Pane(), IView{
     }
 
     override fun update() {
-        println("updating view 2")
         if (model.selectedShape == null){
             viewShape = null
         }
@@ -132,10 +130,18 @@ class View2(private val model: Model): Pane(), IView{
                 this.children.add(this.markBorder)
             }
         }
-        if (this.viewShape != null && model.getSelectedTool() == Tools.EraseTool){
-            this.children.remove(this.viewShape)
+        if (viewShape != null && model.getSelectedTool() == Tools.EraseTool){
+            children.remove(viewShape)
+            viewShape = null
         }
-        if (this.viewShape != null && model.getSelectedTool() == Tools.SelectionTool){
+        if (viewShape != null && model.getSelectedTool() == Tools.SelectionTool && model.deletePressed){
+            println("very confused")
+            println(viewShape)
+            model.deletePressed = false
+            children.remove(viewShape)
+            viewShape = null
+        }
+        if (viewShape != null && model.getSelectedTool() == Tools.SelectionTool){
             if (markBorder == null){
                 markBorder = Rectangle(model.markBorderX!!, model.markBorderY!!, model.markBorderWidth!!, model.markBorderHeight!!)
                 (markBorder as Rectangle).fill = Color.TRANSPARENT
@@ -151,13 +157,11 @@ class View2(private val model: Model): Pane(), IView{
                 (markBorder as Rectangle).height = model.markBorderHeight!!
             }
         }
-        if (this.viewShape == null && this.markBorder != null){
-            this.children.remove(this.markBorder)
-            this.markBorder = null
+        if (viewShape == null && markBorder != null){
+            children.remove(markBorder)
+            markBorder = null
         }
         updateViewShapeBasedOnSelectedShape()
-        println("what")
-        println(viewShape?.strokeDashArray)
     }
 
     private fun updateViewShapeBasedOnSelectedShape(){
@@ -191,7 +195,5 @@ class View2(private val model: Model): Pane(), IView{
         viewShape!!.strokeWidth = Thickness.Type1.getStyle(model.getPickedThickness())
         viewShape!!.strokeDashArray.removeAll(viewShape!!.strokeDashArray)
         viewShape!!.strokeDashArray.addAll(model.createDashedArrayBasedOnPickedStyle())
-        println("help with god")
-        println(viewShape!!.strokeDashArray)
     }
 }
