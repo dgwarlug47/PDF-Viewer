@@ -52,6 +52,5 @@ class View3(private val model: Model) : MenuBar(), IView{
         this.menus.addAll(fileMenu, aboutMenu)
     }
     override fun update() {
-        println("messi")
     }
 }

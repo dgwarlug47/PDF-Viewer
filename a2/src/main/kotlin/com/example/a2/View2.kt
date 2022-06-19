@@ -55,8 +55,6 @@ class View2(private val model: Model): Pane(), IView{
         this.children.add(shape)
         initializeShape()
         model.updateSelectedShapeBasedOnShape(shape!!)
-        println("a bit after")
-        println(model.selectedShape!!.strokeDashArray)
         shape.onMousePressed = EventHandler {
             run{
                 if (model.getSelectedTool() == Tools.SelectionTool) {
@@ -123,10 +121,6 @@ class View2(private val model: Model): Pane(), IView{
 
     override fun update() {
         println("updating view 2")
-        println("selected shape fill color")
-        println(model.selectedShape?.strokeDashArray)
-        println("shape fill color")
-        println(viewShape?.strokeDashArray)
         if (model.selectedShape == null){
             viewShape = null
         }
@@ -162,6 +156,8 @@ class View2(private val model: Model): Pane(), IView{
             this.markBorder = null
         }
         updateViewShapeBasedOnSelectedShape()
+        println("what")
+        println(viewShape?.strokeDashArray)
     }
 
     private fun updateViewShapeBasedOnSelectedShape(){
@@ -195,5 +191,7 @@ class View2(private val model: Model): Pane(), IView{
         viewShape!!.strokeWidth = Thickness.Type1.getStyle(model.getPickedThickness())
         viewShape!!.strokeDashArray.removeAll(viewShape!!.strokeDashArray)
         viewShape!!.strokeDashArray.addAll(model.createDashedArrayBasedOnPickedStyle())
+        println("help with god")
+        println(viewShape!!.strokeDashArray)
     }
 }

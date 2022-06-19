@@ -237,7 +237,7 @@ class View1(private val model: Model): IView, StackPane(){
             model.setPickedStyle(Style.Type1)
         }
 
-        val styleLine1 = Line(20.0, 20.0, 20.0, 100.0)
+        val styleLine1 = Line(20.0, 20.0, 20.0, 120.0)
         styleLine1.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine1.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type1))
         styleButton1.graphic = styleLine1
@@ -248,7 +248,7 @@ class View1(private val model: Model): IView, StackPane(){
             model.setPickedStyle(Style.Type2)
         }
 
-        val styleLine2 = Line(20.0, 20.0, 20.0, 100.0)
+        val styleLine2 = Line(20.0, 20.0, 20.0, 120.0)
         styleLine2.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine2.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type2))
         styleButton2.graphic = styleLine2
@@ -259,9 +259,11 @@ class View1(private val model: Model): IView, StackPane(){
             model.setPickedStyle(Style.Type3)
         }
 
-        val styleLine3 = Line(20.0, 20.0, 20.0, 100.0)
+        val styleLine3 = Line(20.0, 20.0, 20.0, 120.0)
         styleLine3.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine3.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type3))
+        println("god help")
+        println(styleLine3.strokeDashArray)
         styleButton3.graphic = styleLine3
     }
 }

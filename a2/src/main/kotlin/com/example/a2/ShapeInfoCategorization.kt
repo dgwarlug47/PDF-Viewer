@@ -66,7 +66,7 @@ enum class Style{
         if (style == Type2){
             return 15.0
         }
-        return 25.0
+        return 30.0
     }
 }
 

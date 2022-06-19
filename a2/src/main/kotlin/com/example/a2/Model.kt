@@ -206,8 +206,6 @@ class Model(val database: Database, val mvc: MVC){
             this.selectedShape?.centerX = shape.centerX
             this.selectedShape?.centerY = shape.centerY
         }
-        println("shape fill messi")
-        println(shape.fill)
         if (shape.fill == null){
             this.selectedShape?.fill = this.getPickedFillColor()!!
         }
@@ -224,7 +222,7 @@ class Model(val database: Database, val mvc: MVC){
             updateDashedArrayBasedOnPickedStyle()
         }
         else{
-            this.selectedShape?.strokeDashArray?.removeAll(shape.strokeDashArray)
+            this.selectedShape?.strokeDashArray?.removeAll(this.selectedShape?.strokeDashArray!!)
             this.selectedShape?.strokeDashArray?.addAll(shape.strokeDashArray)
         }
         selectedShape?.strokeWidth = shape.strokeWidth
@@ -245,16 +243,12 @@ class Model(val database: Database, val mvc: MVC){
         val dashArray : MutableList<Double> = mutableListOf()
         val dashSize = Style.Type1.getStyle(pickedStyle!!)
         dashArray.add(dashSize)
-        dashArray.add(dashSize)
-        dashArray.add(dashSize)
         return dashArray
     }
 
     fun createDashedArrayBasedOnStyle(style: Style): MutableList<Double>{
         val dashArray : MutableList<Double> = mutableListOf()
         val dashSize = Style.Type1.getStyle(style)
-        dashArray.add(dashSize)
-        dashArray.add(dashSize)
         dashArray.add(dashSize)
         return dashArray
     }
