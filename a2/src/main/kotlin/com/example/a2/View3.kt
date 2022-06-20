@@ -65,14 +65,14 @@ class View3(private val model: Model) : MenuBar(), IView{
         // load item
         val loadItem = MenuItem("Load")
         loadItem.setOnAction {
-            val choiceDialog = TextInputDialog("don't load")
+            val choiceDialog = TextInputDialog("")
             //for (drawingName in model.getDrawingNames()){
             //    choiceDialog.items.add(drawingName)
             //}
             choiceDialog.headerText = "are you sure you want to leave the current drawing?"
             choiceDialog.title = ""
             val result = choiceDialog.showAndWait()
-            if (result.get() != "don't load"){
+            if (result.get() != ""){
                 model.loadViewModel(result.get())
             }
         }
