@@ -10,18 +10,11 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
+import kotlinx.serialization.Contextual
 
 class View2(private val model: Model): Pane(), IView{
     private var markBorder : Shape? = null
     private var viewShape : Shape? = null
-
-    fun clone(cloneModel: Model): View2{
-        val newView2 = View2(cloneModel)
-        for (child in children){
-            newView2.saveOldShape(copyNode(child) as Shape)
-        }
-        return newView2
-    }
 
     private fun registerShapeActions(shape: Shape){
         shape.onMousePressed = EventHandler {
@@ -46,7 +39,7 @@ class View2(private val model: Model): Pane(), IView{
             }
         }
     }
-    private fun saveOldShape(shape: Shape){
+    fun saveOldShape(shape: Shape){
         this.children.add(shape)
         registerShapeActions(shape)
     }
@@ -205,6 +198,11 @@ class View2(private val model: Model): Pane(), IView{
             (viewShape as Circle).radius = model.selectedShape?.radius!!
             (viewShape as Circle).centerX = model.selectedShape?.centerX!!
             (viewShape as Circle).centerY = model.selectedShape?.centerY!!
+        }
+
+        println("stroke shape pojo")
+        if (viewShape?.stroke != null){
+        println(viewShape?.stroke.toString())
         }
     }
     private fun initializeShape(){

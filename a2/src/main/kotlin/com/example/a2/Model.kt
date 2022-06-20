@@ -6,9 +6,14 @@ import javafx.scene.shape.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+import java.io.File
+import java.nio.file.Files
 
-class Model(val database: Database, val mvc: MVC){
-    private val views: ArrayList<IView> = ArrayList()
+class Model(var mvc: MVC){
+    var views: ArrayList<IView> = ArrayList()
     val defaultColor = Color.CORAL
     private var selectedTool = Tools.SelectionTool
     private var pickedFillColor : Color? = defaultColor
@@ -37,35 +42,9 @@ class Model(val database: Database, val mvc: MVC){
     var editPastePressed: Boolean = false
     var copiedShape: Shape? = null
 
-    fun clone(): Model{
-        val cloneModel = Model(database, mvc)
-        cloneModel.selectedTool = selectedTool
-        cloneModel.pickedFillColor = pickedFillColor
-        cloneModel.pickedLineColor = pickedLineColor
-        cloneModel.pickedThickness = pickedThickness
-        cloneModel.pickedStyle = pickedStyle
-        cloneModel.enterX = enterX
-        cloneModel.enterY = enterY
-        cloneModel.markBorderX = markBorderX
-        cloneModel.markBorderY = markBorderY
-        cloneModel.markBorderWidth = markBorderWidth
-        cloneModel.markBorderHeight = markBorderHeight
-        cloneModel.selectedShape = null
-
-        return cloneModel
-    }
-
     fun newCanvas(){
+        mvc.initialize()
         mvc.newCanvas()
-    }
-    fun loadViewModel(drawingName: String){
-        mvc.model = database.getModel(drawingName)
-        mvc.view1 = database.getView1(drawingName)
-        mvc.view2 = database.getView2(drawingName)
-        mvc.newCanvas()
-    }
-    fun getDrawingNames(): MutableList<String>{
-        return database.drawingNames
     }
 
     @JvmName("setSelectedTool1")
@@ -378,9 +357,50 @@ class Model(val database: Database, val mvc: MVC){
         updateViews()
     }
 
-    fun storeSelf(drawingName: String){
-        val cloneModel = clone()
-        database.storeViewModel(drawingName, cloneModel, View1(cloneModel), (views[1] as View2).clone(cloneModel))
+    fun loadViewModel(drawingName: String){
+        val file = File("resources/view2:$drawingName")
+        val bigString = Files.readString(file.toPath())
+        val mvc2 = MVC()
+        val newModel = Model(mvc2)
+        val view2 = View2(newModel)
+        val view3 = View3(newModel)
+        val jsonStrings = bigString.split('^')
+        for (jsonString in jsonStrings){
+            val shapePOJO = Json.decodeFromString<ShapePOJO>(jsonString)
+            val shape = getShape(shapePOJO)
+            println("child")
+            println(shape)
+            view2.saveOldShape(shape)
+        }
+        mvc2.view1 = View1(newModel)
+        mvc2.view2 = view2
+        mvc2.view3 = view3
+        mvc2.model = newModel
+        mvc2.stage = this.mvc.stage
+        mvc2.newCanvas()
+        println("model")
+        println(newModel.views)
+    }
+
+    fun storeModelView(drawingName: String){
+        val view2 = (views[1] as View2)
+        var bigString = ""
+        var firstTime = true
+        unMarkShape()
+        updateViews()
+        for (child in view2.children){
+            val shapePOJO = getShapePOJO(child as Shape)
+            val shapeString = Json.encodeToString(shapePOJO)
+            if (!firstTime){
+                bigString += "^"
+            }
+            firstTime = false
+            bigString += shapeString
+            var file = File("resources/view2:$drawingName")
+            file.createNewFile()
+            file.writeText(bigString)
+        }
+        //database.storeViewModel(drawingName, cloneModel, View1(cloneModel), view2.clone(cloneModel))
     }
 
     fun addView(view: IView) {

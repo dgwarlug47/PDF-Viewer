@@ -44,7 +44,7 @@ class View3(private val model: Model) : MenuBar(), IView{
         newItem.onAction =
             EventHandler {
                 val choiceDialog = ChoiceDialog("yes", "no")
-                choiceDialog.headerText = "are you sure you want to delete the current drawing?"
+                choiceDialog.headerText = "are you sure you want to leave the current drawing?"
                 choiceDialog.title = ""
                 val result = choiceDialog.showAndWait()
                 if (result.get() == "yes"){
@@ -59,30 +59,21 @@ class View3(private val model: Model) : MenuBar(), IView{
             inputDialog.headerText = "Enter drawing name"
             inputDialog.title = ""
             val result = inputDialog.showAndWait()
-            if(model.getDrawingNames().contains(result.get())){
-                val alert = Alert(Alert.AlertType.ERROR)
-                alert.title = "Warning"
-                alert.contentText = "The drawing name that you selected is already being used"
-                alert.showAndWait()
-            }
-            else{
-                model.storeSelf(result.get())
-            }
+            model.storeModelView(result.get())
         }
 
         // load item
         val loadItem = MenuItem("Load")
         loadItem.setOnAction {
-            val choiceDialog = ChoiceDialog("don't want to leave without saving")
-            for (drawingName in model.getDrawingNames()){
-                choiceDialog.items.add(drawingName)
-            }
-            choiceDialog.headerText = "are you sure you want to delete the current drawing?"
+            val choiceDialog = TextInputDialog("don't load")
+            //for (drawingName in model.getDrawingNames()){
+            //    choiceDialog.items.add(drawingName)
+            //}
+            choiceDialog.headerText = "are you sure you want to leave the current drawing?"
             choiceDialog.title = ""
             val result = choiceDialog.showAndWait()
-            if (result.get() != "don't want to leave without saving"){
+            if (result.get() != "don't load"){
                 model.loadViewModel(result.get())
-
             }
         }
 

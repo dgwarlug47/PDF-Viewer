@@ -1,6 +1,5 @@
 package com.example.a2
 
-import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
 class SelectedShape(){

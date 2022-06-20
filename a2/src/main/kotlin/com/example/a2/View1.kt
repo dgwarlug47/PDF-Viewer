@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Line
-import javafx.scene.transform.Affine
+import kotlinx.serialization.Contextual
 import java.io.FileInputStream
 import java.nio.file.Paths
 
@@ -19,7 +19,6 @@ fun fileStuff(currentDirectoryName: String): ImageView {
     val file = Paths.get(currentDirectoryName).toFile()
     return ImageView(Image(FileInputStream(file.absolutePath)))
 }
-
 class View1(private val model: Model): IView, StackPane(){
     private val lineToolButton = ToggleButton()
     private val selectionToolButton = ToggleButton()
@@ -27,10 +26,8 @@ class View1(private val model: Model): IView, StackPane(){
     private val rectangleToolButton = ToggleButton()
     private val circleToolButton = ToggleButton()
     private val fillToolButton = ToggleButton()
-
     private val fillColorPicker = ColorPicker()
     private val lineColorPicker = ColorPicker()
-
     private val thicknessButton1 = ToggleButton("")
     private val thicknessButton2 = ToggleButton("")
     private val thicknessButton3 = ToggleButton("")
@@ -44,6 +41,15 @@ class View1(private val model: Model): IView, StackPane(){
             this.fillColorPicker.value = this.model.getPickedFillColor()
             this.lineColorPicker.value = this.model.getPickedLineColor()
         }
+        if (model.getPickedThickness() == Thickness.Type1){
+            this.thicknessButton1.isSelected = true
+        }
+        if (model.getPickedThickness() == Thickness.Type2){
+            this.thicknessButton2.isSelected = true
+        }
+        if (model.getPickedThickness() == Thickness.Type3){
+            this.thicknessButton3.isSelected = true
+        }
         if (model.getPickedStyle() == Style.Type1) {
             this.styleButton1.isSelected = true
         }
@@ -53,15 +59,13 @@ class View1(private val model: Model): IView, StackPane(){
         if (model.getPickedStyle() == Style.Type3){
             this.styleButton3.isSelected = true
         }
-        if (model.getPickedStyle() == Style.Type1) {
-            this.styleButton1.isSelected = true
-        }
-        if (model.getPickedStyle() == Style.Type2){
-            this.styleButton2.isSelected = true
-        }
-        if (model.getPickedStyle() == Style.Type3){
-            this.styleButton3.isSelected = true
-        }
+        (thicknessButton1.graphic as Line).stroke = model.getPickedLineColor()
+        (thicknessButton2.graphic as Line).stroke = model.getPickedLineColor()
+        (thicknessButton3.graphic as Line).stroke = model.getPickedLineColor()
+        (styleButton1.graphic as Line).stroke = model.getPickedLineColor()
+        (styleButton2.graphic as Line).stroke = model.getPickedLineColor()
+        (styleButton3.graphic as Line).stroke = model.getPickedLineColor()
+
     }
 
     init {
@@ -204,6 +208,7 @@ class View1(private val model: Model): IView, StackPane(){
             model.setPickedThickness(Thickness.Type1)
         }
         val line1 = Line(20.0, 20.0, 20.0, 58.0)
+        line1.stroke = model.defaultColor
         line1.strokeWidth = Thickness.Type1.getStyle(Thickness.Type1)
         thicknessButton1.graphic = line1
 
@@ -213,6 +218,7 @@ class View1(private val model: Model): IView, StackPane(){
             model.setPickedThickness(Thickness.Type2)
         }
         val line2 = Line(20.0, 20.0, 20.0, 54.0)
+        line2.stroke = model.defaultColor
         line2.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         thicknessButton2.graphic = line2
 
@@ -223,6 +229,7 @@ class View1(private val model: Model): IView, StackPane(){
         }
 
         val line3 = Line(20.0, 20.0, 20.0, 50.0)
+        line3.stroke = model.defaultColor
         line3.strokeWidth = Thickness.Type1.getStyle(Thickness.Type3)
         thicknessButton3.graphic = line3
 
@@ -237,6 +244,7 @@ class View1(private val model: Model): IView, StackPane(){
         }
 
         val styleLine1 = Line(20.0, 20.0, 20.0, 120.0)
+        styleLine1.stroke = model.defaultColor
         styleLine1.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine1.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type1))
         styleButton1.graphic = styleLine1
@@ -248,6 +256,7 @@ class View1(private val model: Model): IView, StackPane(){
         }
 
         val styleLine2 = Line(20.0, 20.0, 20.0, 120.0)
+        styleLine2.stroke = model.defaultColor
         styleLine2.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine2.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type2))
         styleButton2.graphic = styleLine2
@@ -259,6 +268,7 @@ class View1(private val model: Model): IView, StackPane(){
         }
 
         val styleLine3 = Line(20.0, 20.0, 20.0, 120.0)
+        styleLine3.stroke = model.defaultColor
         styleLine3.strokeWidth = Thickness.Type1.getStyle(Thickness.Type2)
         styleLine3.strokeDashArray.addAll(model.createDashedArrayBasedOnStyle(Style.Type3))
         styleButton3.graphic = styleLine3
