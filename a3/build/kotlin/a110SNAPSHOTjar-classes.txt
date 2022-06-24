@@ -1,0 +1,1 @@
+/Users/davi/Desktop/dcsena/a2/build/classes/java/main/module-info.class:/Users/davi/Desktop/dcsena/a2/build/classes/kotlin/main/IView.class:/Users/davi/Desktop/dcsena/a2/build/classes/kotlin/main/Model.class:/Users/davi/Desktop/dcsena/a2/build/classes/kotlin/main/View.class:/Users/davi/Desktop/dcsena/a2/build/classes/kotlin/main/com/example/a2/Main.class
