@@ -1,39 +1,35 @@
 package com.example.code
 
 import javafx.application.Application
-import javafx.event.EventHandler
 import javafx.scene.Scene
-import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
-import javafx.scene.paint.Color
 import javafx.stage.Stage
 
 class HelloApplication : Application() {
     override fun start(stage: Stage) {
         val pane = Pane()
-        val enemiesBox = EnemiesBox()
+        val enemiesVBox = EnemiesVBox()
         val player = Player()
         val timer = Timer()
         val collisionHandler = CollisionHandler()
-        val observersManager = ObserversManager(pane, timer, enemiesBox, collisionHandler)
-
-        val bulletGenerator = BulletGenerator()
-
+        val observersManager = ObserversManager(pane, timer, enemiesVBox, collisionHandler)
+        val bulletGenerator = BulletGenerator(enemiesVBox)
 
         // put observer manager
         player.observersManager = observersManager
+        collisionHandler.add2(player)
         collisionHandler.observersManager = observersManager
         bulletGenerator.observersManager = observersManager
+        enemiesVBox.observersManager = observersManager
+        enemiesVBox.attach()
 
 
-        pane.children.add(enemiesBox)
+        pane.children.add(enemiesVBox)
         pane.children.add(player)
 
-        enemiesBox.giveChildrenToObserver(collisionHandler)
 
-
-        timer.attach(enemiesBox)
+        timer.attach(enemiesVBox)
         timer.attach(bulletGenerator)
         timer.attach(collisionHandler)
         timer.attach(player)

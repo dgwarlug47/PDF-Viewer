@@ -1,17 +1,14 @@
 package com.example.code
 
-import javafx.animation.TranslateTransition
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
-import javafx.scene.layout.Pane
 import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Rectangle
-import javafx.util.Duration
 import java.io.File
 
-class Player() : Rectangle(CANVAS_WIDTH/2, 500.0, 40.0, 40.0), Observer{
+class Player() : Rectangle(CANVAS_WIDTH/2, 300.0, 40.0, 40.0), Observer{
     var observersManager: ObserversManager? = null
-    val path = "space-invaders-assets/images/player.png"
+    private val path = "space-invaders-assets/images/player.png"
     var currentlyMoving = false
     var dir = 1
     init {
@@ -34,9 +31,10 @@ class Player() : Rectangle(CANVAS_WIDTH/2, 500.0, 40.0, 40.0), Observer{
             currentlyMoving = true
         }
         if (code == KeyCode.SPACE){
-            val bullet = Bullet()
+            val bullet = Bullet(x + translateX + 10.0, y + 5.0, 20.0, 20.0, BulletOwners.Players)
             observersManager?.addToPane(bullet)
-
+            observersManager?.addToTimer(bullet)
+            observersManager?.add2ToCollisionHandler(bullet)
         }
     }
 

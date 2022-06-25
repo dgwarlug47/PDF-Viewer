@@ -6,12 +6,22 @@ import javafx.scene.shape.Rectangle
 import java.io.File
 import java.nio.file.Paths
 
-class Enemy : Rectangle(0.0, 0.0, 40.0, 40.0){
-    val path = "space-invaders-assets/images/enemy2.png"
+enum class EnemyType{
+    type1,
+    type2,
+    type3
+}
 
+class Enemy(enemyType: EnemyType) : Rectangle(0.0, 0.0, 40.0, 40.0){
     init {
-        println("hey")
-        println(Paths.get("").toAbsolutePath().toString() )
+        var enemyFlag = "1"
+        if (enemyType == EnemyType.type2){
+            enemyFlag = "2"
+        }
+        if (enemyType == EnemyType.type3){
+            enemyFlag = "3"
+        }
+        val path = "space-invaders-assets/images/enemy$enemyFlag.png"
         this.fill = ImagePattern(Image(File(path).toURI().toString()))
     }
 }

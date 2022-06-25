@@ -1,11 +1,11 @@
 package com.example.code
 
 import javafx.scene.Node
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
-import javafx.scene.shape.Shape
 
-class ObserversManager(val pane: Pane, val timer: Timer, val enemiesBox: EnemiesBox,
+class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: EnemiesVBox,
                        val collisionHandler: CollisionHandler) {
 
     fun addToPane(node: Node){
@@ -16,16 +16,14 @@ class ObserversManager(val pane: Pane, val timer: Timer, val enemiesBox: Enemies
         timer.attach(observer)
     }
 
-    fun addToEnemyBox(node: Node){
-        enemiesBox.children.add(node)
-    }
-
     fun removeFromPane(node: Node){
         pane.children.remove(node)
     }
 
-    fun removeFromEnemyBox(node: Node){
-        enemiesBox.children.remove(node)
+    fun removeFromEnemyVBox(node: Node){
+        for (child in enemiesVBox.children){
+            (child as HBox).children.remove(node)
+        }
     }
 
     fun add1ToCollisionHandler(shape: Rectangle){
