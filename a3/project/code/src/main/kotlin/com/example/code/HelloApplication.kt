@@ -22,6 +22,8 @@ class HelloApplication : Application() {
         collisionHandler.observersManager = observersManager
         bulletGenerator.observersManager = observersManager
         enemiesVBox.observersManager = observersManager
+
+        //
         enemiesVBox.attach()
 
 
