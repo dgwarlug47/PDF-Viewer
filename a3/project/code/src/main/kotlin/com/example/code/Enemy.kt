@@ -12,7 +12,7 @@ enum class EnemyType{
     type3
 }
 
-class Enemy(enemyType: EnemyType) : Rectangle(0.0, 0.0, 40.0, 40.0){
+class Enemy(enemyType: EnemyType, val boxId: Int) : Rectangle(0.0, 0.0, 40.0, 40.0){
     init {
         var enemyFlag = "1"
         if (enemyType == EnemyType.type2){

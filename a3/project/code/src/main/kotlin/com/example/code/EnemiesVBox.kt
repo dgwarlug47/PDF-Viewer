@@ -6,17 +6,18 @@ import javafx.scene.shape.Rectangle
 
 class EnemiesVBox() :  VBox(), Observer{
     private val enemyList : MutableList<Enemy> = mutableListOf()
+    var state = 1
     var direction = 1
 
     var observersManager: ObserversManager? = null
 
-    init {
-        val enemyHBox1 = EnemiesHBox(EnemyType.type1)
-        val enemyHBox2 = EnemiesHBox(EnemyType.type2)
-        val enemyHBox3 = EnemiesHBox(EnemyType.type2)
-        val enemyHBox4 = EnemiesHBox(EnemyType.type2)
-        val enemyHBox5 = EnemiesHBox(EnemyType.type3)
+    val enemyHBox1 = EnemiesHBox(EnemyType.type1, 0)
+    val enemyHBox2 = EnemiesHBox(EnemyType.type2, 1)
+    val enemyHBox3 = EnemiesHBox(EnemyType.type2, 2)
+    val enemyHBox4 = EnemiesHBox(EnemyType.type2, 3)
+    val enemyHBox5 = EnemiesHBox(EnemyType.type3, 4)
 
+    init {
         children.add(enemyHBox1)
         children.add(enemyHBox2)
         children.add(enemyHBox3)
@@ -24,6 +25,11 @@ class EnemiesVBox() :  VBox(), Observer{
         children.add(enemyHBox5)
     }
     override fun update(){
+        state += 1
+        if (state % 100 == 0){
+            println("why very angry")
+            enemyHBox1.children.remove(enemyHBox1.enemyList[4])
+        }
         if (this.translateX + this.width >= CANVAS_WIDTH || this.translateX < 0){
             this.translateY = this.translateY + 3
             direction = -direction

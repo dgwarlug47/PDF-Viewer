@@ -4,6 +4,7 @@ import javafx.scene.Node
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
+import javafx.scene.shape.Shape
 
 class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: EnemiesVBox,
                        val collisionHandler: CollisionHandler) {
@@ -20,9 +21,14 @@ class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: Enemie
         pane.children.remove(node)
     }
 
-    fun removeFromEnemyVBox(node: Node){
+    fun removeFromEnemyVBox(enemy: Enemy){
+        println("this is hte boxid")
+        println(enemy.boxId)
         for (child in enemiesVBox.children){
-            (child as HBox).children.remove(node)
+            val enemiesHBox = (child as EnemiesHBox)
+            if (enemiesHBox.enemyList.contains(enemy)){
+                enemiesHBox.children.remove(enemy as Shape)
+            }
         }
     }
 
