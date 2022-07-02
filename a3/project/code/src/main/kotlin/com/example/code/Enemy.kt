@@ -1,6 +1,7 @@
 package com.example.code
 
 import javafx.scene.image.Image
+import javafx.scene.paint.Color
 import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Rectangle
 import java.io.File
@@ -13,6 +14,7 @@ enum class EnemyType{
 }
 
 class Enemy(enemyType: EnemyType, val boxId: Int) : Rectangle(0.0, 0.0, 40.0, 40.0){
+    var alive = true
     init {
         var enemyFlag = "1"
         if (enemyType == EnemyType.type2){
@@ -23,5 +25,9 @@ class Enemy(enemyType: EnemyType, val boxId: Int) : Rectangle(0.0, 0.0, 40.0, 40
         }
         val path = "space-invaders-assets/images/enemy$enemyFlag.png"
         this.fill = ImagePattern(Image(File(path).toURI().toString()))
+    }
+    fun remove(){
+        this.fill = Color.WHITE
+        this.alive = false
     }
 }

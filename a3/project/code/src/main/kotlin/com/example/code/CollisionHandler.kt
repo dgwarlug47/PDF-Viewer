@@ -16,7 +16,8 @@ class CollisionHandler() :Observer{
             for (shape2 in shapes2){
                 if (Shape.intersect(shape1, shape2).boundsInLocal.width != -1.0){
                     if (shape1 is Enemy) {
-                        observersManager?.removeFromEnemyVBox(shape1)
+                        shape1.remove()
+                        observersManager?.enemiesVBox?.enemyWasHit()
                     }
                     observersManager?.removeFromPane(shape2)
                     shapes1.remove(shape1)

@@ -22,8 +22,6 @@ class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: Enemie
     }
 
     fun removeFromEnemyVBox(enemy: Enemy){
-        println("this is hte boxid")
-        println(enemy.boxId)
         for (child in enemiesVBox.children){
             val enemiesHBox = (child as EnemiesHBox)
             if (enemiesHBox.enemyList.contains(enemy)){

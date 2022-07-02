@@ -11,6 +11,7 @@ class Player() : Rectangle(40.0, 300.0, 40.0, 40.0), Observer{
     private val path = "space-invaders-assets/images/player.png"
     var currentlyMoving = false
     var dir = 1
+    var lastTimeMissalFired = 0.0
     init {
         this.fill = ImagePattern(Image(File(path).toURI().toString()))
     }
@@ -31,6 +32,7 @@ class Player() : Rectangle(40.0, 300.0, 40.0, 40.0), Observer{
             currentlyMoving = true
         }
         if (code == KeyCode.SPACE){
+            val currentTime = System.currentTimeMillis()
             val bullet = Bullet(x + translateX + 10.0, y + 5.0, 20.0, 20.0, BulletOwners.Players)
             observersManager?.addToPane(bullet)
             observersManager?.addToTimer(bullet)

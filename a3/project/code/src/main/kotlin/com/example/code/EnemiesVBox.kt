@@ -3,11 +3,12 @@ package com.example.code
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.shape.Rectangle
+import java.lang.Float.*
 
 class EnemiesVBox() :  VBox(), Observer{
     private val enemyList : MutableList<Enemy> = mutableListOf()
-    var state = 1
     var direction = 1
+    var currentXVelocity = 1.0
 
     var observersManager: ObserversManager? = null
 
@@ -17,6 +18,10 @@ class EnemiesVBox() :  VBox(), Observer{
     val enemyHBox4 = EnemiesHBox(EnemyType.type2, 3)
     val enemyHBox5 = EnemiesHBox(EnemyType.type3, 4)
 
+    // enemies offset bound
+    var enemiesLeftOffsetBound = 0.0
+    var enemiesRightOffsetBound = 0.0
+
     init {
         children.add(enemyHBox1)
         children.add(enemyHBox2)
@@ -25,16 +30,12 @@ class EnemiesVBox() :  VBox(), Observer{
         children.add(enemyHBox5)
     }
     override fun update(){
-        state += 1
-        if (state % 100 == 0){
-            println("why very angry")
-            enemyHBox1.children.remove(enemyHBox1.enemyList[4])
-        }
-        if (this.translateX + this.width >= CANVAS_WIDTH || this.translateX < 0){
+        updateEnemiesBounds()
+        if (this.translateX + this.enemiesRightOffsetBound >= CANVAS_WIDTH || this.translateX + this.enemiesLeftOffsetBound < 0){
             this.translateY = this.translateY + 3
             direction = -direction
         }
-        this.translateX = this.translateX + direction*3
+        this.translateX = this.translateX + direction * currentXVelocity
     }
     fun attach(){
         for (hbox in children){
@@ -43,20 +44,50 @@ class EnemiesVBox() :  VBox(), Observer{
             }
         }
     }
-    fun getBulletPosition(seed: Int): Pair<Double, Double>{
+    fun getNewBulletPosition(seed: Int): Pair<Double, Double>{
         var it = 0
         while (true) {
             for (hbox in children) {
                 for (child in (hbox as HBox).children) {
+                    if (child !is Enemy){
+                        continue
+                    }
+                    if (!child.alive){
+                        continue
+                    }
                     if (seed == it) {
-                        println("seed again")
-                        println(hbox.localToParentTransform.ty)
                         return Pair(this.translateX + child.localToParentTransform.tx
                             , this.translateY + hbox.localToParentTransform.ty)
                     }
                     it += 1
                 }
             }
+        }
+    }
+    fun enemyWasHit(){
+        updateEnemiesBounds()
+        currentXVelocity += 0.2
+    }
+    private fun updateEnemiesBounds(){
+        var leftBound = POSITIVE_INFINITY
+        var rightBound = NEGATIVE_INFINITY
+        for (hbox in children) {
+            for (child in (hbox as HBox).children) {
+                if (child !is Enemy){
+                    continue
+                }
+                if (!child.alive) {
+                    continue
+                }
+                leftBound = min(leftBound, child.boundsInParent.minX.toFloat())
+                rightBound = max(rightBound, child.boundsInParent.maxX.toFloat())
+            }
+        }
+        if (leftBound != POSITIVE_INFINITY){
+            this.enemiesLeftOffsetBound = leftBound.toDouble()
+        }
+        if (rightBound != Float.NEGATIVE_INFINITY){
+            this.enemiesRightOffsetBound = rightBound.toDouble()
         }
     }
 }
