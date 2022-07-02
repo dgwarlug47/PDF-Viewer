@@ -5,7 +5,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 
 class StatusBar() : Pane(){
-    var lives = 0
+    var lives = 3
         set (lives){
             label2.text = "Lives $lives"
             field = lives

@@ -23,7 +23,7 @@ class CollisionHandler() :Observer{
                     if (shape1 is Enemy) {
                         shape1.remove()
                         observersManager?.enemiesVBox?.enemyWasHit()
-                        observersManager?.statusBar.enemyWasHit()
+                        observersManager?.statusBar?.enemyWasHit()
                     }
                     if (shape2 is Player){
                         observersManager?.resetPlayer()

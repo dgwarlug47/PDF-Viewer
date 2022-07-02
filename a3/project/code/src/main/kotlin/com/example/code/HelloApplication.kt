@@ -17,7 +17,7 @@ class HelloApplication: Application() {
     override fun start(stage: Stage?) {
         this.stage = stage
         if (stage != null) {
-            gameScreen.start(stage, score)
+            gameScreen.start(stage, score, 1)
         }
     }
 }
