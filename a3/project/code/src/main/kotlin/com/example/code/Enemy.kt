@@ -27,7 +27,7 @@ class Enemy(enemyType: EnemyType, val boxId: Int) : Rectangle(0.0, 0.0, 40.0, 40
         this.fill = ImagePattern(Image(File(path).toURI().toString()))
     }
     fun remove(){
-        this.fill = Color.WHITE
+        this.fill = Color.BLACK
         this.alive = false
     }
 }

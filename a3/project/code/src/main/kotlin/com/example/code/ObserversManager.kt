@@ -1,13 +1,13 @@
 package com.example.code
 
 import javafx.scene.Node
-import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 
-class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: EnemiesVBox,
-                       val collisionHandler: CollisionHandler) {
+class ObserversManager(
+    private val pane: Pane, private val timer: Timer, val enemiesVBox: EnemiesVBox,
+    val collisionHandler: CollisionHandler, private val playerManager: PlayerManager, val statusBar: StatusBar) {
 
     fun addToPane(node: Node){
         pane.children.add(node)
@@ -36,5 +36,10 @@ class ObserversManager(val pane: Pane, val timer: Timer, val enemiesVBox: Enemie
 
     fun add2ToCollisionHandler(shape: Rectangle){
         collisionHandler.add2(shape)
+    }
+
+    fun resetPlayer(){
+        statusBar.updateLives()
+        playerManager.resetPlayer()
     }
 }

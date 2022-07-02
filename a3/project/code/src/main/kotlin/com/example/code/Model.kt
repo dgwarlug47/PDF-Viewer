@@ -3,6 +3,5 @@ const val CANVAS_WIDTH = 800.0
 const val CANVAS_HEIGHT = 600.0
 
 class Model() {
-
-    val currentLevel = 2.0
+    val currentLevel = 0.0
 }

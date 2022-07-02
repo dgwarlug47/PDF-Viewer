@@ -7,20 +7,20 @@ import java.lang.Float.*
 
 class EnemiesVBox() :  VBox(), Observer{
     private val enemyList : MutableList<Enemy> = mutableListOf()
-    var direction = 1
-    var currentXVelocity = 1.0
+    private var direction = 1
+    private var currentXVelocity = 1.0
 
     var observersManager: ObserversManager? = null
 
-    val enemyHBox1 = EnemiesHBox(EnemyType.type1, 0)
-    val enemyHBox2 = EnemiesHBox(EnemyType.type2, 1)
-    val enemyHBox3 = EnemiesHBox(EnemyType.type2, 2)
-    val enemyHBox4 = EnemiesHBox(EnemyType.type2, 3)
-    val enemyHBox5 = EnemiesHBox(EnemyType.type3, 4)
+    private val enemyHBox1 = EnemiesHBox(EnemyType.type1, 0)
+    private val enemyHBox2 = EnemiesHBox(EnemyType.type2, 1)
+    private val enemyHBox3 = EnemiesHBox(EnemyType.type2, 2)
+    private val enemyHBox4 = EnemiesHBox(EnemyType.type2, 3)
+    private val enemyHBox5 = EnemiesHBox(EnemyType.type3, 4)
 
     // enemies offset bound
-    var enemiesLeftOffsetBound = 0.0
-    var enemiesRightOffsetBound = 0.0
+    private var enemiesLeftOffsetBound = 0.0
+    private var enemiesRightOffsetBound = 0.0
 
     init {
         children.add(enemyHBox1)
