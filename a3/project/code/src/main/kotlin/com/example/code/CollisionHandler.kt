@@ -13,7 +13,13 @@ class CollisionHandler(private val helloApplication: HelloApplication) :Observer
     var killedEnemiesCounter = 0
 
     override fun update(){
+        var foundIntersection = false
+        var finalShape1: Rectangle? = null
+        var finalShape2: Rectangle? = null
         for (shape1 in shapes1){
+            if (foundIntersection){
+                break
+            }
             if (shape1 is Enemy){
                 if (!shape1.alive){
                     continue
@@ -23,22 +29,32 @@ class CollisionHandler(private val helloApplication: HelloApplication) :Observer
                 if (Shape.intersect(shape1, shape2).boundsInLocal.width != -1.0){
                     if (shape1 is Enemy) {
                         killedEnemiesCounter += 1
-                        if (killedEnemiesCounter == 50){
+                        if (killedEnemiesCounter == if (DEBUG) 15 else 50){
+                            println("going to next level")
                             helloApplication.nextLevel()
                         }
                         shape1.remove()
                         observersManager!!.enemiesVBox.enemyWasHit()
                         observersManager!!.statusBar.enemyWasHit()
                     }
+                    else if (shape1 is Bullet){
+                        observersManager!!.removeFromPane(shape1)
+                    }
                     if (shape2 is Player){
                         observersManager!!.resetPlayer()
                     }
-                    observersManager!!.removeFromPane(shape2)
-                    shapes1.remove(shape1)
-                    shapes2.remove(shape2)
+                    if (shape2 is Bullet) {
+                        observersManager!!.removeFromPane(shape2)
+                    }
+                    finalShape1 = shape1
+                    finalShape2 = shape2
+                    foundIntersection = true
+                    break
                 }
             }
         }
+        shapes1.remove(finalShape1)
+        shapes2.remove(finalShape2)
     }
 
     fun add1(shape: Rectangle){

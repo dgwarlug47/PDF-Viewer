@@ -10,7 +10,6 @@ class HelloApplication: Application() {
     private var level = 1
     private var gameScreen = GameScreen(this)
     private val initialScreen = InitialScreen(this)
-    private val gameWonScreen = GameWonScreen(this)
     private var gameOverScreen = GameOverScreen(this)
 
     fun setGameOverScreen() {
