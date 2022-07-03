@@ -6,9 +6,25 @@ import javafx.scene.shape.Rectangle
 import java.lang.Float.*
 
 class EnemiesVBox() :  VBox(), Observer{
-    private val enemyList : MutableList<Enemy> = mutableListOf()
+    var level = 1
+        set (level){
+            if (level == 1){
+                currentXVelocity = 1.0
+                offsetXVelocity = 0.2
+            }
+            if (level == 2){
+                currentXVelocity = 2.0
+                offsetXVelocity = 0.35
+            }
+            if (level == 3){
+                currentXVelocity = 3.0
+                offsetXVelocity = 0.5
+            }
+            field = level
+        }
     private var direction = 1
     private var currentXVelocity = 1.0
+    private var offsetXVelocity = 0.2
 
     var observersManager: ObserversManager? = null
 
@@ -32,7 +48,7 @@ class EnemiesVBox() :  VBox(), Observer{
     override fun update(){
         updateEnemiesBounds()
         if (this.translateX + this.enemiesRightOffsetBound >= CANVAS_WIDTH || this.translateX + this.enemiesLeftOffsetBound < 0){
-            this.translateY = this.translateY + 3
+            this.translateY = this.translateY + 5
             direction = -direction
         }
         this.translateX = this.translateX + direction * currentXVelocity
@@ -66,7 +82,7 @@ class EnemiesVBox() :  VBox(), Observer{
     }
     fun enemyWasHit(){
         updateEnemiesBounds()
-        currentXVelocity += 0.2
+        currentXVelocity += offsetXVelocity
     }
     private fun updateEnemiesBounds(){
         var leftBound = POSITIVE_INFINITY

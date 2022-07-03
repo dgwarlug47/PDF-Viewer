@@ -2,8 +2,8 @@ package com.example.code
 
 import javafx.scene.input.KeyCode
 
-class PlayerManager(val helloApplication: HelloApplication) {
-    var lives = 3
+class PlayerManager(private val helloApplication: HelloApplication) {
+    private var lives = 6
     var player = Player()
 
     fun resetPlayer(){

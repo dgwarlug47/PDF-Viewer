@@ -24,18 +24,18 @@ class StatusBar() : Pane(){
     private val label1 = Label("Score: $score")
     private val label2 = Label("Lives: $lives")
     private val label3 = Label("Level: $level")
-    private val hbox = HBox()
+    private val hBox = HBox()
 
     init {
-        hbox.spacing = 300.0
+        hBox.spacing = 300.0
         this.style = "-fx-background-color: black;"
 
         label1.style = "-fx-text-fill: white; -fx-font-size: 16px;"
         label2.style = "-fx-text-fill: white; -fx-font-size: 16px;"
         label3.style = "-fx-text-fill: white; -fx-font-size: 16px;"
 
-        hbox.children.addAll(label1, label2, label3)
-        this.children.add(hbox)
+        hBox.children.addAll(label1, label2, label3)
+        this.children.add(hBox)
     }
 
     fun updateLives(){
