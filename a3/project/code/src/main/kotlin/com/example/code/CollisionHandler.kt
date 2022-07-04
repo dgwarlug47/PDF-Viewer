@@ -8,7 +8,10 @@ import javafx.scene.media.Media
 
 
 class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
-    val classLoader = Thread.currentThread().contextClassLoader
+    private val classLoader = Thread.currentThread().contextClassLoader
+    private val something = classLoader.getResource("explosion.wav")?.toString()
+    private val media = Media(something)
+
     var observersManager: ObserversManager? = null
     // shapes that include the enemies and their bullets
     private val shapes1 : MutableList<Rectangle> = mutableListOf()
@@ -37,18 +40,11 @@ class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
             for (shape2 in shapes2){
                 if (Shape.intersect(shape1, shape2).boundsInLocal.width != -1.0){
                     if (shape1 is Enemy) {
-                        val something = classLoader.getResource("invaderkilled.wav")?.toString()
-                        MediaPlayer(Media(something)).play()
+                        MediaPlayer(media).play()
 
                         killedEnemiesCounter += 1
                         if (killedEnemiesCounter == if (DEBUG) 15 else 50){
                             gameIsOver = true
-                            break
-                        }
-                        if (shape2 is Player){
-                            println("we went here")
-                            gameIsOver = true
-                            gameWon = false
                             break
                         }
 
@@ -60,8 +56,7 @@ class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
                         observersManager!!.removeFromPane(shape1)
                     }
                     if (shape2 is Player){
-                        val something = classLoader.getResource("explosion.wav")?.toString()
-                        MediaPlayer(Media(something)).play()
+                        MediaPlayer(media).play()
                         observersManager!!.resetPlayer()
                     }
                     observersManager!!.removeFromPane(shape2)

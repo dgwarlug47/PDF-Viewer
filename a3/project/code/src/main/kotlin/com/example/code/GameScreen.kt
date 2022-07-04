@@ -12,8 +12,8 @@ class GameScreen(var helloApplication: HelloApplication?){
     var playerManager = PlayerManager(helloApplication!!)
     var statusBar = StatusBar()
     val collisionHandler = CollisionHandler(helloApplication!!)
-    private val observersManager = ObserversManager(pane, timer, enemiesVBox, collisionHandler, playerManager, statusBar)
     private val bulletGenerator = BulletGenerator(enemiesVBox)
+    private val observersManager = ObserversManager(pane, timer, enemiesVBox, collisionHandler, playerManager, statusBar, bulletGenerator)
     fun start(score: Int, level: Int) : Scene{
         statusBar.score = score
         statusBar.level = level

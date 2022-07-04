@@ -54,7 +54,7 @@ class GameOverScreen(private val helloApplication: HelloApplication) : BorderPan
                 e ->
             run{
                 if (e.code == KeyCode.R){
-                    helloApplication.setGameScreen(0, 1)
+                    helloApplication.setInitialScreen()
                 }
                 if (e.code == KeyCode.Q){
                     Platform.exit()

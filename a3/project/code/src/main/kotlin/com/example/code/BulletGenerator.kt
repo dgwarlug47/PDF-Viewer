@@ -4,9 +4,8 @@ package com.example.code
 class BulletGenerator(private val enemiesVBox: EnemiesVBox) : Observer{
     private val totalNumEnemies = 50
     var observersManager: ObserversManager? = null
-    private var state = 0
 
-    private fun generateBullets(){
+    fun generateBullets(){
         val seed1 = (0 until totalNumEnemies).random()
         val triple = enemiesVBox.getNewBulletPosition(seed1)
         val x = triple.first
@@ -25,14 +24,9 @@ class BulletGenerator(private val enemiesVBox: EnemiesVBox) : Observer{
     }
 
     override fun update(){
-        state += 1
-        if (!DEBUG) {
-            if (state % 50 == 0) {
-                generateBullets()
-            }
-        }
-        if (DEBUG) {
-            if (state % 50 == 0) {
+        val seed = (0 until 52).random()
+        if (!DEBUG or DEBUG) {
+            if (seed == 0) {
                 generateBullets()
             }
         }

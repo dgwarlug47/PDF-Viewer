@@ -8,20 +8,22 @@ import javafx.scene.shape.Rectangle
 import java.lang.Float.*
 
 class EnemiesVBox() :  VBox(), Observer{
-    val classLoader = Thread.currentThread().contextClassLoader
+    private val classLoader = Thread.currentThread().contextClassLoader
+    private val something = classLoader.getResource("fastinvader1.wav")?.toString()
+    private val media = Media(something)
     var level = 1
         set (level){
             if (level == 1){
-                currentXVelocity = 1.0
-                offsetXVelocity = 0.2
+                currentXVelocity = 0.33
+                offsetXVelocity = 0.05
             }
             if (level == 2){
-                currentXVelocity = 2.0
-                offsetXVelocity = 0.35
+                currentXVelocity = 0.66
+                offsetXVelocity = 0.10
             }
             if (level == 3){
-                currentXVelocity = 3.0
-                offsetXVelocity = 0.5
+                currentXVelocity = 1.0
+                offsetXVelocity = 0.15
             }
             field = level
         }
@@ -51,10 +53,10 @@ class EnemiesVBox() :  VBox(), Observer{
     override fun update(){
         updateEnemiesBounds()
         if (this.translateX + this.enemiesRightOffsetBound >= CANVAS_WIDTH || this.translateX + this.enemiesLeftOffsetBound < 0){
-            this.translateY = this.translateY + 5
+            this.translateY = this.translateY + 20
             direction = -direction
-            val something = classLoader.getResource("fastinvader1.wav")?.toString()
-            MediaPlayer(Media(something)).play()
+            MediaPlayer(media).play()
+            observersManager!!.generateBullets()
         }
         this.translateX = this.translateX + direction * currentXVelocity
     }

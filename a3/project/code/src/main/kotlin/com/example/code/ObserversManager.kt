@@ -7,7 +7,8 @@ import javafx.scene.shape.Shape
 
 class ObserversManager(
     private val pane: Pane, private val timer: Timer, val enemiesVBox: EnemiesVBox,
-    val collisionHandler: CollisionHandler, private val playerManager: PlayerManager, val statusBar: StatusBar) {
+    val collisionHandler: CollisionHandler, private val playerManager: PlayerManager,
+    val statusBar: StatusBar, val bulletGenerator: BulletGenerator) {
 
     fun addToPane(node: Node){
         pane.children.add(node)
@@ -49,5 +50,9 @@ class ObserversManager(
 
     fun screenIsDead(){
         timer.stop()
+    }
+
+    fun generateBullets(){
+        bulletGenerator.generateBullets()
     }
 }

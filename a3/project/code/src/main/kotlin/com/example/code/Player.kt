@@ -10,6 +10,8 @@ import java.io.File
 
 class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
     private val classLoader = Thread.currentThread().contextClassLoader
+    private val something = classLoader.getResource("shoot.wav")?.toString()
+    private val media =  Media(something)
     var observersManager: ObserversManager? = null
     private val path = "space-invaders-assets/images/player.png"
     private var currentlyMoving = false
@@ -40,8 +42,7 @@ class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
                 lastTimeMissalFired = currentTime
                 val bullet = Bullet(x + translateX + 10.0, y + 5.0, 20.0, 20.0, BulletOwners.Players)
                 observersManager?.addToPane(bullet)
-                val something = classLoader.getResource("shoot.wav")?.toString()
-                MediaPlayer(Media(something)).play()
+                MediaPlayer(media).play()
                 observersManager?.addToTimer(bullet)
                 observersManager?.add2ToCollisionHandler(bullet)
             }

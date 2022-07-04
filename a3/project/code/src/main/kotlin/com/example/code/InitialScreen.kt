@@ -25,6 +25,8 @@ class InitialScreen(private val helloApplication: HelloApplication) : BorderPane
     private val vBox = VBox()
     private val vBox2 = VBox()
     private val instructions = Text("Instructions")
+    private val label0 = Label("Student Name - Davi Cavalcanti Sena")
+    private val labelk = Label("Student Number - 20800126")
     private val label1 = Label("ENTER - Start Game")
     private val label2 = Label("A or D move ship left or right")
     private val label3 = Label("SPACE - Fire")
@@ -51,6 +53,8 @@ class InitialScreen(private val helloApplication: HelloApplication) : BorderPane
         vBox.children.add(vBox2)
 
         vBox2.children.add(instructions)
+        vBox2.children.add(label0)
+        vBox2.children.add(labelk)
         vBox2.children.add(label1)
         vBox2.children.add(label2)
         vBox2.children.add(label3)

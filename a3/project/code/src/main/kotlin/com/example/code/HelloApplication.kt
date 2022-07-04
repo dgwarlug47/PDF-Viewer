@@ -28,7 +28,7 @@ class HelloApplication: Application() {
         stage!!.show()
     }
 
-    private fun setInitialScreen(){
+    fun setInitialScreen(){
         stage!!.scene = initialScreen.start()
         stage!!.show()
     }
