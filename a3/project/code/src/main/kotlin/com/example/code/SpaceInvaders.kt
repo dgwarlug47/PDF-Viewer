@@ -8,7 +8,7 @@ class SpaceInvaders: Application() {
     private var score = 0
     private var level = 1
     private var gameScreen = GameScreen(this)
-    private val initialScreen = InitialScreen(this)
+    private var initialScreen = InitialScreen(this)
     private var gameOverScreen = GameOverScreen(this)
 
     fun setGameOverScreen() {
@@ -26,6 +26,7 @@ class SpaceInvaders: Application() {
     }
 
     fun setInitialScreen(){
+        initialScreen = InitialScreen(this)
         stage!!.scene = initialScreen.start()
         stage!!.show()
     }
