@@ -8,10 +8,17 @@ class BulletGenerator(private val enemiesVBox: EnemiesVBox) : Observer{
 
     private fun generateBullets(){
         val seed1 = (0 until totalNumEnemies).random()
-        val pair = enemiesVBox.getNewBulletPosition(seed1)
-        val x = pair.first
-        val y = pair.second
-        val bullet = Bullet(x, y, 20.0, 20.0, BulletOwners.VillanType3)
+        val triple = enemiesVBox.getNewBulletPosition(seed1)
+        val x = triple.first
+        val y = triple.second
+        var bulletOwners = BulletOwners.VillanType1
+        if (triple.third == EnemyType.type3){
+            bulletOwners = BulletOwners.VillanType3
+        }
+        if (triple.third == EnemyType.type2){
+            bulletOwners = BulletOwners.VillanType2
+        }
+        val bullet = Bullet(x, y, 20.0, 20.0, bulletOwners)
         observersManager?.add1ToCollisionHandler(bullet)
         observersManager?.addToPane(bullet)
         observersManager?.addToTimer(bullet)

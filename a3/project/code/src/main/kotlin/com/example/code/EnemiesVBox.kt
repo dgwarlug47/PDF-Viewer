@@ -60,7 +60,7 @@ class EnemiesVBox() :  VBox(), Observer{
             }
         }
     }
-    fun getNewBulletPosition(seed: Int): Pair<Double, Double>{
+    fun getNewBulletPosition(seed: Int): Triple<Double, Double, EnemyType>{
         var it = 0
         while (true) {
             for (hbox in children) {
@@ -72,8 +72,8 @@ class EnemiesVBox() :  VBox(), Observer{
                         continue
                     }
                     if (seed == it) {
-                        return Pair(this.translateX + child.localToParentTransform.tx
-                            , this.translateY + hbox.localToParentTransform.ty)
+                        return Triple(this.translateX + child.localToParentTransform.tx
+                            , this.translateY + hbox.localToParentTransform.ty, child.enemyType)
                     }
                     it += 1
                 }
