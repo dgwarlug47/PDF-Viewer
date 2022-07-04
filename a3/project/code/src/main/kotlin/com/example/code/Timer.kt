@@ -12,4 +12,7 @@ class Timer () : Subject{
     init {
         timer.start()
     }
+    fun stop(){
+        timer.stop()
+    }
 }

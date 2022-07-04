@@ -4,7 +4,7 @@ import javafx.scene.shape.Rectangle
 import javafx.scene.shape.Shape
 
 
-class CollisionHandler(private val helloApplication: HelloApplication) :Observer{
+class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
     var observersManager: ObserversManager? = null
     // shapes that include the enemies and their bullets
     private val shapes1 : MutableList<Rectangle> = mutableListOf()
@@ -30,8 +30,7 @@ class CollisionHandler(private val helloApplication: HelloApplication) :Observer
                     if (shape1 is Enemy) {
                         killedEnemiesCounter += 1
                         if (killedEnemiesCounter == if (DEBUG) 15 else 50){
-                            println("going to next level")
-                            helloApplication.nextLevel()
+                            break
                         }
                         shape1.remove()
                         observersManager!!.enemiesVBox.enemyWasHit()
@@ -43,9 +42,8 @@ class CollisionHandler(private val helloApplication: HelloApplication) :Observer
                     if (shape2 is Player){
                         observersManager!!.resetPlayer()
                     }
-                    if (shape2 is Bullet) {
-                        observersManager!!.removeFromPane(shape2)
-                    }
+                    observersManager!!.removeFromPane(shape2)
+
                     finalShape1 = shape1
                     finalShape2 = shape2
                     foundIntersection = true
@@ -55,6 +53,14 @@ class CollisionHandler(private val helloApplication: HelloApplication) :Observer
         }
         shapes1.remove(finalShape1)
         shapes2.remove(finalShape2)
+
+        if (killedEnemiesCounter == if (DEBUG) 15 else 50){
+            for (shape2 in shapes2){
+                observersManager!!.removeFromPane(shape2)
+            }
+            observersManager!!.screenIsDead()
+            helloApplication!!.nextLevel()
+        }
     }
 
     fun add1(shape: Rectangle){

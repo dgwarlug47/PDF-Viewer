@@ -42,4 +42,8 @@ class ObserversManager(
         statusBar.updateLives()
         playerManager.resetPlayer()
     }
+
+    fun screenIsDead(){
+        timer.stop()
+    }
 }

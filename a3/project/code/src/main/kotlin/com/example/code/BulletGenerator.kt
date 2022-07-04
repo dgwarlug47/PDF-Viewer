@@ -1,7 +1,7 @@
 package com.example.code
 
 
-class BulletGenerator(val enemiesVBox: EnemiesVBox) : Observer{
+class BulletGenerator(private val enemiesVBox: EnemiesVBox) : Observer{
     private val totalNumEnemies = 50
     var observersManager: ObserversManager? = null
     private var state = 0
@@ -19,8 +19,15 @@ class BulletGenerator(val enemiesVBox: EnemiesVBox) : Observer{
 
     override fun update(){
         state += 1
-        if (state%50 == 0){
-            generateBullets()
+        if (!DEBUG) {
+            if (state % 50 == 0) {
+                generateBullets()
+            }
+        }
+        if (DEBUG) {
+            if (state % 50 == 0) {
+                generateBullets()
+            }
         }
     }
 }

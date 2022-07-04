@@ -44,6 +44,9 @@ class HelloApplication: Application() {
     }
 
     fun setGameScreen(score: Int, level: Int){
+        gameScreen.helloApplication = null
+        gameScreen.playerManager.helloApplication = null
+        gameScreen.collisionHandler.helloApplication = null
         gameScreen = GameScreen(this)
         stage!!.scene = gameScreen.start(score, level)
         stage!!.show()

@@ -5,13 +5,13 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
-class GameScreen(helloApplication: HelloApplication){
+class GameScreen(var helloApplication: HelloApplication?){
     private val pane = Pane()
     private val enemiesVBox = EnemiesVBox()
     private val timer = Timer()
-    var playerManager = PlayerManager(helloApplication)
+    var playerManager = PlayerManager(helloApplication!!)
     var statusBar = StatusBar()
-    private val collisionHandler = CollisionHandler(helloApplication)
+    val collisionHandler = CollisionHandler(helloApplication!!)
     private val observersManager = ObserversManager(pane, timer, enemiesVBox, collisionHandler, playerManager, statusBar)
     private val bulletGenerator = BulletGenerator(enemiesVBox)
     fun start(score: Int, level: Int) : Scene{
