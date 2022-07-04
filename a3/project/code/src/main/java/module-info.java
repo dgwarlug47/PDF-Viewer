@@ -4,6 +4,7 @@ module com.example.code {
     requires kotlin.stdlib;
     requires javafx.graphics;
     requires java.desktop;
+    requires javafx.media;
 
 
     opens com.example.code to javafx.fxml;

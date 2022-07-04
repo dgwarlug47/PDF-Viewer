@@ -2,10 +2,13 @@ package com.example.code
 
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import javafx.scene.media.Media
+import javafx.scene.media.MediaPlayer
 import javafx.scene.shape.Rectangle
 import java.lang.Float.*
 
 class EnemiesVBox() :  VBox(), Observer{
+    val classLoader = Thread.currentThread().contextClassLoader
     var level = 1
         set (level){
             if (level == 1){
@@ -50,6 +53,8 @@ class EnemiesVBox() :  VBox(), Observer{
         if (this.translateX + this.enemiesRightOffsetBound >= CANVAS_WIDTH || this.translateX + this.enemiesLeftOffsetBound < 0){
             this.translateY = this.translateY + 5
             direction = -direction
+            val something = classLoader.getResource("fastinvader1.wav")?.toString()
+            MediaPlayer(Media(something)).play()
         }
         this.translateX = this.translateX + direction * currentXVelocity
     }

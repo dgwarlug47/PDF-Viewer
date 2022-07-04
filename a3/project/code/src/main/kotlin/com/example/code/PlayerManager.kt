@@ -7,7 +7,7 @@ class PlayerManager(var helloApplication: HelloApplication?) {
     private var observersManager: ObserversManager? = null
     private var lives = if(DEBUG) 6 else 3
     private var random1 = Random.nextFloat()
-    private var player = Player(random1* (CANVAS_WIDTH-50), CANVAS_HEIGHT-40.0)
+    private var player = Player((random1* (CANVAS_WIDTH-50)).toDouble(), if(!DEBUG) CANVAS_HEIGHT-40.0 else 220.0)
 
     fun resetPlayer(){
         lives -= 1
@@ -17,7 +17,7 @@ class PlayerManager(var helloApplication: HelloApplication?) {
         }
         val observersManager = player.observersManager
         random1 = Random.nextFloat()
-        player = Player(random1* (CANVAS_WIDTH-50), CANVAS_HEIGHT-40.0)
+        player = Player((random1* (CANVAS_WIDTH-50)).toDouble(), if(!DEBUG) CANVAS_HEIGHT-40.0 else 220.0)
 
         if (observersManager != null) {
             initWithObserversManager(observersManager)

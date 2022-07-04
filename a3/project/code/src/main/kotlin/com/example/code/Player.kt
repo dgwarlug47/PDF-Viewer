@@ -2,11 +2,14 @@ package com.example.code
 
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
+import javafx.scene.media.Media
+import javafx.scene.media.MediaPlayer
 import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Rectangle
 import java.io.File
 
 class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
+    private val classLoader = Thread.currentThread().contextClassLoader
     var observersManager: ObserversManager? = null
     private val path = "space-invaders-assets/images/player.png"
     private var currentlyMoving = false
@@ -37,6 +40,8 @@ class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
                 lastTimeMissalFired = currentTime
                 val bullet = Bullet(x + translateX + 10.0, y + 5.0, 20.0, 20.0, BulletOwners.Players)
                 observersManager?.addToPane(bullet)
+                val something = classLoader.getResource("shoot.wav")?.toString()
+                MediaPlayer(Media(something)).play()
                 observersManager?.addToTimer(bullet)
                 observersManager?.add2ToCollisionHandler(bullet)
             }

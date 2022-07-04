@@ -31,13 +31,13 @@ application {
 
 [compileKotlin, compileTestKotlin].forEach {
     it.kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 }
 
 javafx {
     version = '17.0.1'
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.media']
 }
 
 dependencies {
