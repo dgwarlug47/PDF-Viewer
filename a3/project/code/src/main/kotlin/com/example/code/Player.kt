@@ -6,7 +6,7 @@ import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Rectangle
 import java.io.File
 
-class Player() : Rectangle(40.0, 300.0, 40.0, 40.0), Observer{
+class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
     var observersManager: ObserversManager? = null
     private val path = "space-invaders-assets/images/player.png"
     private var currentlyMoving = false
