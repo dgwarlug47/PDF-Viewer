@@ -21,7 +21,7 @@ class BulletGenerator(private val enemiesVBox: EnemiesVBox) : Observer{
         val bullet = Bullet(x, y, 20.0, 20.0, bulletOwners)
         observersManager?.add1ToCollisionHandler(bullet)
         observersManager?.addToPane(bullet)
-        observersManager?.addToTimer(bullet)
+        observersManager?.queueAddToTimer(bullet)
     }
 
     override fun update(){

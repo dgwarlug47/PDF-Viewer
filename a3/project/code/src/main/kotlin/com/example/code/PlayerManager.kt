@@ -23,7 +23,7 @@ class PlayerManager(var helloApplication: HelloApplication?) {
     fun initWithObserversManager(observersManager: ObserversManager){
         this.observersManager = observersManager
         player.observersManager = observersManager
-        observersManager.addToTimer(player)
+        observersManager.queueAddToTimer(player)
         observersManager.collisionHandler.add2(player)
         observersManager.addToPane(player)
     }

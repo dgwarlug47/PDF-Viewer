@@ -1,7 +1,6 @@
 package com.example.code
 
 import javafx.application.Application
-import javafx.scene.Scene
 import javafx.stage.Stage
 
 class HelloApplication: Application() {

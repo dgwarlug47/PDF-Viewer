@@ -17,6 +17,10 @@ class ObserversManager(
         timer.attach(observer)
     }
 
+    fun queueAddToTimer(observer: Observer){
+        timer.queueAttach(observer)
+    }
+
     fun removeFromPane(node: Node){
         pane.children.remove(node)
     }
