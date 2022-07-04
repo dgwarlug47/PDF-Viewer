@@ -63,7 +63,7 @@ class Player(x: Double, y:Double) : Rectangle(x, y, 40.0, 40.0), Observer{
                 return
             }
         }
-        translateX += (dir*3)
+        translateX += (dir*5)
 
     }
 }

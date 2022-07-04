@@ -15,11 +15,11 @@ class EnemiesVBox() :  VBox(), Observer{
         set (level){
             if (level == 1){
                 currentXVelocity = 0.33
-                offsetXVelocity = 0.05
+                offsetXVelocity = 0.02
             }
             if (level == 2){
                 currentXVelocity = 0.66
-                offsetXVelocity = 0.10
+                offsetXVelocity = 0.07
             }
             if (level == 3){
                 currentXVelocity = 1.0
