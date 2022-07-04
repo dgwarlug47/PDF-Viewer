@@ -1,12 +1,9 @@
 package com.example.code
 
 import javafx.application.Application
-import javafx.scene.media.Media
-import javafx.scene.media.MediaPlayer
 import javafx.stage.Stage
 
-class HelloApplication: Application() {
-    val classLoader = Thread.currentThread().contextClassLoader
+class SpaceInvaders: Application() {
     private var stage: Stage? = null
     private var score = 0
     private var level = 1
@@ -46,9 +43,9 @@ class HelloApplication: Application() {
     }
 
     fun setGameScreen(score: Int, level: Int){
-        gameScreen.helloApplication = null
-        gameScreen.playerManager.helloApplication = null
-        gameScreen.collisionHandler.helloApplication = null
+        gameScreen.spaceInvaders = null
+        gameScreen.playerManager.spaceInvaders = null
+        gameScreen.collisionHandler.spaceInvaders = null
         gameScreen = GameScreen(this)
         stage!!.scene = gameScreen.start(score, level)
         stage!!.isResizable = false

@@ -3,15 +3,14 @@ package com.example.code
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
-import javafx.stage.Stage
 
-class GameScreen(var helloApplication: HelloApplication?){
+class GameScreen(var spaceInvaders: SpaceInvaders?){
     private val pane = Pane()
     private val enemiesVBox = EnemiesVBox()
     private val timer = Timer()
-    var playerManager = PlayerManager(helloApplication!!)
+    var playerManager = PlayerManager(spaceInvaders!!)
     var statusBar = StatusBar()
-    val collisionHandler = CollisionHandler(helloApplication!!)
+    val collisionHandler = CollisionHandler(spaceInvaders!!)
     private val bulletGenerator = BulletGenerator(enemiesVBox)
     private val observersManager = ObserversManager(pane, timer, enemiesVBox, collisionHandler, playerManager, statusBar, bulletGenerator)
     fun start(score: Int, level: Int) : Scene{

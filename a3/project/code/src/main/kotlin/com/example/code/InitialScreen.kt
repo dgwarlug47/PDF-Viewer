@@ -1,14 +1,12 @@
 package com.example.code
 
 import javafx.application.Platform
-import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.ImagePattern
 import javafx.scene.shape.Rectangle
@@ -17,10 +15,8 @@ import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
 import java.io.File
-import javax.swing.text.StyleConstants.FontFamily
-import javax.swing.text.StyledEditorKit.FontFamilyAction
 
-class InitialScreen(private val helloApplication: HelloApplication) : BorderPane(){
+class InitialScreen(private val spaceInvaders: SpaceInvaders) : BorderPane(){
     private val logo = Rectangle(0.0, 0.0, 491.0, 211.0)
     private val vBox = VBox()
     private val vBox2 = VBox()
@@ -67,16 +63,16 @@ class InitialScreen(private val helloApplication: HelloApplication) : BorderPane
             e ->
             run{
                 if (e.code == KeyCode.ENTER){
-                    helloApplication.setGameScreen(0, 1)
+                    spaceInvaders.setGameScreen(0, 1)
                 }
                 if (e.code == KeyCode.DIGIT1){
-                    helloApplication.setGameScreen(0, 1)
+                    spaceInvaders.setGameScreen(0, 1)
                 }
                 if (e.code == KeyCode.DIGIT2){
-                    helloApplication.setGameScreen(0, 2)
+                    spaceInvaders.setGameScreen(0, 2)
                 }
                 if (e.code == KeyCode.DIGIT3){
-                    helloApplication.setGameScreen(0,3)
+                    spaceInvaders.setGameScreen(0,3)
                 }
                 if (e.code == KeyCode.Q){
                     Platform.exit()
@@ -92,16 +88,16 @@ class InitialScreen(private val helloApplication: HelloApplication) : BorderPane
                 e ->
             run{
                 if (e.code == KeyCode.ENTER){
-                    helloApplication.setGameScreen(0, 1)
+                    spaceInvaders.setGameScreen(0, 1)
                 }
                 if (e.code == KeyCode.DIGIT1){
-                    helloApplication.setGameScreen(0, 1)
+                    spaceInvaders.setGameScreen(0, 1)
                 }
                 if (e.code == KeyCode.DIGIT2){
-                    helloApplication.setGameScreen(0, 2)
+                    spaceInvaders.setGameScreen(0, 2)
                 }
                 if (e.code == KeyCode.DIGIT3){
-                    helloApplication.setGameScreen(0,3)
+                    spaceInvaders.setGameScreen(0,3)
                 }
                 if (e.code == KeyCode.Q){
                     Platform.exit()

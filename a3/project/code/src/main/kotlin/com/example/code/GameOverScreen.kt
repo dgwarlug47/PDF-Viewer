@@ -5,10 +5,8 @@ import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.control.Label
-import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.scene.text.FontPosture
@@ -16,7 +14,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
 
 
-class GameOverScreen(private val helloApplication: HelloApplication) : BorderPane(){
+class GameOverScreen(private val spaceInvaders: SpaceInvaders) : BorderPane(){
     private val label4 = Label("")
     private val label2 = Label("R - Restart Game")
     private val label3 = Label("Q - Quit Game")
@@ -54,7 +52,7 @@ class GameOverScreen(private val helloApplication: HelloApplication) : BorderPan
                 e ->
             run{
                 if (e.code == KeyCode.R){
-                    helloApplication.setInitialScreen()
+                    spaceInvaders.setInitialScreen()
                 }
                 if (e.code == KeyCode.Q){
                     Platform.exit()

@@ -7,7 +7,7 @@ import javafx.scene.media.Media
 
 
 
-class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
+class CollisionHandler(var spaceInvaders: SpaceInvaders?) :Observer{
     private val classLoader = Thread.currentThread().contextClassLoader
     private val something = classLoader.getResource("explosion.wav")?.toString()
     private val media = Media(something)
@@ -77,10 +77,10 @@ class CollisionHandler(var helloApplication: HelloApplication?) :Observer{
             }
             observersManager!!.screenIsDead()
             if (gameWon) {
-                helloApplication!!.nextLevel()
+                spaceInvaders!!.nextLevel()
             }
             else{
-                helloApplication!!.setGameOverScreen()
+                spaceInvaders!!.setGameOverScreen()
             }
         }
     }

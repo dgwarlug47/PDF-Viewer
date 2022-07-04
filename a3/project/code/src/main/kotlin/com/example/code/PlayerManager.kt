@@ -3,7 +3,7 @@ package com.example.code
 import javafx.scene.input.KeyCode
 import kotlin.random.Random
 
-class PlayerManager(var helloApplication: HelloApplication?) {
+class PlayerManager(var spaceInvaders: SpaceInvaders?) {
     private var observersManager: ObserversManager? = null
     private var lives = if(DEBUG) 6 else 3
     private var random1 = Random.nextFloat()
@@ -13,7 +13,7 @@ class PlayerManager(var helloApplication: HelloApplication?) {
         lives -= 1
         if (lives == 0){
             observersManager!!.screenIsDead()
-            helloApplication!!.setGameOverScreen()
+            spaceInvaders!!.setGameOverScreen()
         }
         val observersManager = player.observersManager
         random1 = Random.nextFloat()
