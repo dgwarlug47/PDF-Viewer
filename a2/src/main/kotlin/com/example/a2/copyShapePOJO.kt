@@ -51,7 +51,8 @@ fun getShapePOJO(shape: Shape): ShapePOJO{
         //ColorMapping().REVERSED_NAMED_COLORS[if (shape.stroke == null) Color.ALICEBLUE else (shape.stroke as Color)]!!,
         //ColorMapping().REVERSED_NAMED_COLORS[if (shape.fill == null) Color.ALICEBLUE else (shape.fill as Color)]!!
         stroke,
-        fill
+        fill,
+        life = Sha()
     )
 
 }

@@ -1,0 +1,40 @@
+MotionEvent.ACTION_DOWN -> {
+                    Log.d(LOG_NAME, "Action down")
+                    currentX = event.x
+                    currentY = event.y
+                    lastX = currentX
+                    lastY = currentY
+                    // update currentPath and currentPathLog
+                    currentPath.moveTo(currentX, currentY)
+                    currentPathPoints = ArrayList()
+                    currentPathPoints.add(Point(currentX, currentY))
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    Log.d(LOG_NAME, "Action move")
+                    if (counter %2 == 0) {
+                        lastX = currentX
+                        lastY = currentY
+                        currentPath.moveTo(currentX, currentY)
+                        currentPathPoints.add(Point(currentX, currentY))
+                    }
+                    currentPath.quadTo((lastX + event.x)/2, (lastY + event.y)/2, event.x, event.y)
+                    currentPathPoints.add(Point((lastX + event.x)/2, (lastY + event.y)/2))
+                    currentPathPoints.add(Point(event.x, event.y))
+                    currentX = event.x
+                    currentY = event.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    Log.d(LOG_NAME, "Action up")
+
+                    // update paths
+                    val newPath = MyPath(currentPathId, currentPath)
+                    addedPaths.add(newPath)
+                    currentPathId += 1
+                    addedPathPoints.add(currentPathPoints)
+
+                    // undo, redo queue
+                    undoQueue.add(Actions(ActionType.Draw, newPath, currentPathPoints))
+                    redoQueue.clear()
+
+                    currentPath = Path()
+                }

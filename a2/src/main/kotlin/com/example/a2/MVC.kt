@@ -6,6 +6,9 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class MVC : Application() {
     var stage: Stage? = null
@@ -48,6 +51,15 @@ class MVC : Application() {
     }
     override fun start(stage: Stage) {
         this.stage = stage
-        newCanvas()
+        val sha = Sha(1.0, 2.0)
+        val shape = ShapePOJO(x=7.0,life=sha)
+        println("shape")
+        println(shape)
+        val thunder = Json.encodeToString(shape)
+        println("thunkder")
+        println(thunder)
+        val again = Json.decodeFromString<ShapePOJO>(thunder)
+        println("again")
+        println(again)
     }
 }

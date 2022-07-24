@@ -1,7 +1,5 @@
 package com.example.a2
 
-import javafx.scene.paint.Color
-import kotlinx.serialization.Contextual
 
 @kotlinx.serialization.Serializable
 data class ShapePOJO(
@@ -27,4 +25,5 @@ data class ShapePOJO(
     var centerY: Double = 0.0,
     var stroke: String = "coral",
     var fill: String = "aliceblue",
+    var life: Sha
 )
