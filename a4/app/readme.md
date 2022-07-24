@@ -1,4 +1,9 @@
+Davi Cavalcanti Sena
+
+Student number: 200800126
+
 Comments:
+
 i) Erase is undoable, so if you erase and click undo then the drawing will show up again
 
 ii) My code was a bit slow on the emulator, I don't know why. But when paired with a device,
