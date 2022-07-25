@@ -2,6 +2,10 @@ Davi Cavalcanti Sena
 
 Student number: 200800126
 
+Android 12.0
+
+API level 32
+
 Comments:
 
 i) Erase is undoable, so if you erase and click undo then the drawing will show up again

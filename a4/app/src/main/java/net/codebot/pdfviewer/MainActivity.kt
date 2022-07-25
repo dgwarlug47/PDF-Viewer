@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
 
         val text = findViewById<TextView>(R.id.textView2)
         val pageCount = pdfRenderer.pageCount
-        text.text = "page ${index+1}/$pageCount"
+        text.text = "shannon 1984, page ${index+1}/$pageCount"
     }
 
     private fun initializePage(){
