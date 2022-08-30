@@ -75,7 +75,7 @@ class PDFImage  // constructor
     var bitmap: Bitmap? = null
 
     init {
-        scaleType = ScaleType.FIT_XY
+        scaleType = ScaleType.CENTER_CROP
         highlightPaintBrush.style = Paint.Style.STROKE
         highlightPaintBrush.strokeWidth = 25f
         highlightPaintBrush.color = Color.rgb(255, 255, 224)
@@ -113,7 +113,8 @@ class PDFImage  // constructor
 //        currentMatrix.preScale(w.toFloat()/oldw.toFloat(), h.toFloat()/oldh.toFloat())
         val sx = w.toFloat()/oldWidth!!
         val sy = h.toFloat()/oldHeight!!
-        updateChangeOrientation(sx, sy)
+        val god = centerCropMatrix(this)
+        updateChangeOrientation(sx, sx)
         oldWidth = w.toFloat()
         oldHeight = h.toFloat()
     }
@@ -444,6 +445,26 @@ class PDFImage  // constructor
         val scaleY = f[Matrix.MSCALE_Y]
 
         return Pair(scaleX, scaleY)
+    }
+
+        fun centerCropMatrix(view: ImageView): Matrix? {
+            val image = view.drawable
+            val imageWidth = image.intrinsicWidth
+            val imageViewWidth = view.width
+            val scaleX = imageViewWidth.toFloat() / imageWidth
+            val imageHeight = image.intrinsicHeight
+            val imageViewHeight = view.height
+            val scaleY = imageViewHeight.toFloat() / imageHeight
+            val maxScale = Math.max(scaleX, scaleY)
+            val width = imageWidth * maxScale
+            val height = imageHeight * maxScale
+            val tx = Math.round((imageViewWidth - width) / 2f)
+            val ty = Math.round((imageViewHeight - height) / 2f)
+            val matrix = Matrix()
+            matrix.postScale(maxScale, maxScale)
+            matrix.postTranslate(tx.toFloat(), ty.toFloat())
+            return matrix
+        }
     }
 }
 
