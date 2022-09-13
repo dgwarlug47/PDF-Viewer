@@ -2,6 +2,8 @@
 
 Android app that enables the user to draw on top of a pdf document.
 
+(Observation, the folders a1, a2, a3 were deleted because they were from other projects). a4 folder contains the whole PDF-Viewer
+
 Main features include:
 
 1) taking notes
